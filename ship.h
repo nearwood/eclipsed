@@ -1,6 +1,9 @@
 #ifndef SHIP_H
 #define SHIP_H
 
+class Ship;
+class Sector;
+
 #include "player.h"
 #include "sector.h"
 

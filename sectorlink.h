@@ -1,6 +1,9 @@
 #ifndef SECTORLINK_H
 #define SECTORLINK_H
 
+class SectorLink;
+class Sector;
+
 #include "sector.h"
 
 class SectorLink

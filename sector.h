@@ -1,10 +1,13 @@
 #ifndef SECTOR_H
 #define SECTOR_H
 
-#include <QList>
+class SectorLink;
 
+#include "ship.h"
 #include "planet.h"
 #include "sectorlink.h"
+
+#include <QList>
 
 class Sector
 {
@@ -16,7 +19,7 @@ public:
 
 	QList<Ship> ships;
 
-	SectorLink *n, *ne, *se, *s, *sw, *nw;
+	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;
 	Sector *n, *ne, *se, *s, *sw, *nw;
 
     Sector();

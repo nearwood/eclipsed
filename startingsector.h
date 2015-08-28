@@ -1,6 +1,7 @@
 #ifndef STARTINGSECTOR_H
 #define STARTINGSECTOR_H
 
+#include "sector.h"
 
 class StartingSector : public Sector
 {

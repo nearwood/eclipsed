@@ -5,7 +5,7 @@ ShipBlueprint::ShipBlueprint()
 
 }
 
-ShipBlueprint::getHP()
+int ShipBlueprint::getHP()
 {
 	return this->hullPoints + 1;
 }

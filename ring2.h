@@ -1,6 +1,7 @@
 #ifndef RING2_H
 #define RING2_H
 
+#include "sector.h"
 
 class Ring2 : public Sector
 {

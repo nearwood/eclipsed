@@ -1,6 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+class Player;
+
+#include "ship.h"
+
+#include <QList>
 
 class Player
 {
@@ -13,8 +18,6 @@ public:
 
 	QList<Ship> builtShips;
 	QList<Ship> ships;
-
-
 
 	Player();
 };

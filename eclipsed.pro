@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     player.cpp \
     ship.cpp \
     tech.cpp \
-    shipblueprint.cpp
+    shipblueprint.cpp \
+    game.cpp
 
 HEADERS  += mainwindow.h \
     sector.h \
@@ -41,6 +42,7 @@ HEADERS  += mainwindow.h \
     player.h \
     ship.h \
     tech.h \
-    shipblueprint.h
+    shipblueprint.h \
+    game.h
 
 FORMS    += mainwindow.ui

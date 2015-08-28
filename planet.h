@@ -9,7 +9,7 @@ class Planet
 {
 public:
 	enum ResourceType { ANY, MINERALS, SCIENCE, ECONOMY };
-	ResouceType resourceType;
+	ResourceType resourceType;
 
 	bool isOrbital; //orbitals can only be science/economy IIRC
 
