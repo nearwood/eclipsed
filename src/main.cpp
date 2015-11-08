@@ -16,9 +16,14 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	ifstream ifs;
-	Json::Value races;
+	Json::Value races, setup;
 	
-	cout << "eclipsed alpha" << endl;
+	if (argc <= 1)
+	{
+		cout << "eclipsed alpha" << endl;
+		cout << "Usage: " << argv[0] << " <game.json>" << endl;
+		return 0;
+	}
 	
 	cout << "Loading game files..." << endl;
 	ifs.open(GD_RACES, ifstream::in);
@@ -30,8 +35,22 @@ int main(int argc, char *argv[])
 	
 	Json::Reader rdr;
 	rdr.parse(ifs, races, false);
+	//load all game constants
 	
 	cout << "Loading game configuration..." << endl;
+	
+	//load what the user has input for a set of games
+	//# players, races, iterations, player difficulty
+	
+	cout << "Game parameters..." << endl;
+	Game game(setup);
+	//setup races, techs (for number of players), decide first player, etc.
+	
+	cout << "Simulating..." << endl;
+	game.play(); //TODO some kind of while (1), but with some feedback and system.process() or whatever
+	//preferably in another thread
+	
+	//start timing and go through each turn, and each phase each turn until victory
 	
 	return 0;
 	
@@ -39,5 +58,4 @@ int main(int argc, char *argv[])
     //ainWindow w;
     //w.show();
     //return a.exec();
-
 }

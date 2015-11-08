@@ -13,7 +13,7 @@ JSON/XML/TXT: Races, Ships, etc.?
 
 ## TODO
 # Limit players to one race from each side of player board
-
+# AI Players min/max, humanize to min/max +/- 10%, etc.
 
 http://doc.qt.io/qt-5/cmake-manual.html
 
