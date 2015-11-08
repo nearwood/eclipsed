@@ -7,17 +7,17 @@ class SectorLink;
 #include "planet.h"
 #include "sectorlink.h"
 
-#include <QList>
+#include <list>
 
 class Sector
 {
 public:
-	QList<Planet> planets;
+	std::list<Planet> planets;
 	bool ancientSpawn;
 	bool ancientBonus;
 	int id;
 
-	QList<Ship> ships;
+	std::list<Ship> ships;
 
 	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;
 	Sector *n, *ne, *se, *s, *sw, *nw;

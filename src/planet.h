@@ -1,7 +1,7 @@
 #ifndef PLANET_H
 #define PLANET_H
 
-#include <QList>
+#include <list>
 
 #include "resource.h"
 
@@ -13,7 +13,7 @@ public:
 
 	bool isOrbital; //orbitals can only be science/economy IIRC
 
-	QList<Resource> resources;
+	std::list<Resource> resources;
 
     Planet();
 };

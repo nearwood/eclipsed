@@ -5,9 +5,14 @@
 #include "ship.h"
 #include "player.h"
 
+#include <list>
+
 class Game
 {
 public:
+	std::list<Player> players;
+	std::list<Sector> sectors;
+	
 	Game();
 };
 
