@@ -11,8 +11,8 @@
 class Game
 {
 public:
-	std::list<Player> players;
-	std::list<Sector> sectors;
+	std::list<Player*> players;
+	std::list<Sector*> sectors;
 	
 	Game();
 	Game(Json::Value setup); //json setup parameters

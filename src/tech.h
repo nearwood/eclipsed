@@ -5,7 +5,7 @@
 class Tech
 {
 public:
-	enum Type { GEAR, UPGRADE, Uhhh};
+	enum Type {GEAR, UPGRADE, Uhhh};
 
 	Tech();
 };

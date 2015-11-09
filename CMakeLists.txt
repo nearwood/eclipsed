@@ -15,6 +15,8 @@ INCLUDE_DIRECTORIES(${JSONCPP_INCLUDE_DIRS})
 
 #SET(INCLUDES src/.h)
 SET(SOURCES src/main.cpp
+			src/Action.cpp
+			src/GameState.cpp
 			src/galacticcenter.cpp
 			src/planet.cpp
 			src/ring1.cpp

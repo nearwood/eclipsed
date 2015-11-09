@@ -38,8 +38,7 @@
 		upgrade: 3,
 		build: 3,
 		special: [
-			"cheaper building costs",
-			""
+			"-1 build costs"
 		],
 		rep: 4,
 		dip: 4,

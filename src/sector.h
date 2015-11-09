@@ -17,7 +17,7 @@ public:
 	bool ancientBonus;
 	int id;
 
-	std::list<Ship> ships;
+	std::list<Ship*> ships;
 
 	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;
 	Sector *n, *ne, *se, *s, *sw, *nw;
