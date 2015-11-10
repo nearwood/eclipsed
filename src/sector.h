@@ -6,6 +6,7 @@ class SectorLink;
 #include "ship.h"
 #include "planet.h"
 #include "sectorlink.h"
+#include "InfluenceDisc.h"
 
 #include <list>
 
@@ -17,6 +18,7 @@ public:
 	bool ancientBonus;
 	int id;
 
+	std::list<Disc*> discs;
 	std::list<Ship*> ships;
 
 	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;

@@ -9,6 +9,7 @@
 
 class GameState
 {
+	enum Phase {};
 	std::list<Player*> players;
 	std::list<Sector*> sectors;
 	std::list<Tech*> tech; //shown for purchase and remaining?
