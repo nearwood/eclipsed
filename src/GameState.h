@@ -9,6 +9,7 @@
 
 class GameState
 {
+	short int round;
 	enum Phase {};
 	std::list<Player*> players;
 	std::list<Sector*> sectors;

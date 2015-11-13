@@ -19,7 +19,7 @@ JSON Game initial state
 
 ## Notes
 Mitigating Horizon Effect? What are important moves? System capture, player death, etc.?
-Game only goes on for X rounds
+Game limited to 9 rounds
 
 http://doc.qt.io/qt-5/cmake-manual.html
 
