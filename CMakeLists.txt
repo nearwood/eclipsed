@@ -7,6 +7,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 #find_package(Qt5Widgets REQUIRED)
 #find_package(Qt5Core REQUIRED)
 
+#set(THREADS_PREFER_PTHREAD_FLAG ON) #prefer? required
+
+find_package(Threads REQUIRED)
 find_package(jsoncpp REQUIRED)
 
 INCLUDE_DIRECTORIES(${JSONCPP_INCLUDE_DIRS})
@@ -37,7 +40,5 @@ SET(SOURCES src/main.cpp
 #source_group(includes FILES ${INCLUDES})
 
 add_executable(eclipsed ${SOURCES})# ${MOCSRC} ${UISRC})
-#add_executable(eclipsed-trainer ${TRAINER_SOURCES})
 
-target_link_libraries(eclipsed ${JSONCPP_LIBRARIES})# Qt5::Widgets)
-#target_link_libraries(eclipsed-trainer ${OpenCV_LIBS} Qt5::Widgets)
+target_link_libraries(eclipsed Threads::Threads ${JSONCPP_LIBRARIES})# Qt5::Widgets)

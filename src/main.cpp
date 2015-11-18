@@ -14,9 +14,13 @@
 
 using namespace std;
 
-void gameRunner(Json::Value setup)
+void* gameRunner(void* g)
 {
-	
+	cout << "Simulation thread start..." << endl;
+	Game* game = (Game*)g;
+	//start timing and go through each turn, and each phase each turn until victory
+	cout << "Simulating..." << endl;
+	game->play(); //TODO some kind of while (1), but with some feedback and system.process() or whatever
 }
 
 int main(int argc, char *argv[])
@@ -46,26 +50,23 @@ int main(int argc, char *argv[])
 	
 	cout << "Loading game configuration..." << endl;
 	
+	cout << "Game parameters..." << endl;
+	Game* game = new Game(setup);
+	//setup races, techs (for number of players), decide first player, etc.
+	
 	//load what the user has input for a set of games
 	//# players, races, iterations, player difficulty
 	
 	//Could bring Qt back and use QThreads
 	
-	iret1 = pthread_create(&gameThread, NULL, gameRunner, (void*)setup);
+	int iret1 = pthread_create(&gameThread, NULL, gameRunner, (void*)game);
 	if (iret1)
 	{
-		//fprintf(stderr,"Error - pthread_create() return code: %d\n",iret1);
+		cerr << "Error - pthread_create() return code: " << iret1 << endl;
 		//exit(EXIT_FAILURE);
-		
-		cout << "Game parameters..." << endl;
-		Game game(setup);
-		//setup races, techs (for number of players), decide first player, etc.
-		
-		cout << "Simulating..." << endl;
-		//start timing and go through each turn, and each phase each turn until victory
-		game.play(); //TODO some kind of while (1), but with some feedback and system.process() or whatever
-		//preferably in another thread
 	}
+	
+	delete game;
 	
 	return 0;
 	
