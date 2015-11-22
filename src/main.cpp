@@ -37,7 +37,7 @@ int main(int argc, char *argv[])
 	
 	if (argc <= 1)
 	{
-		cout << "eclipsed alpha" << endl;
+		cout << "eclipsed" << endl;
 		cout << "Usage: " << argv[0] << " <game.json>" << endl;
 		return 0;
 	}
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 	ifs.close();
 	
 	cout << "Game parameters..." << endl;
-	Game* game = new Game(GameState(setup));
+	Game* game = new Game(GameState::fromJson(setup));
 	//setup races, techs (for number of players), decide first player, etc.
 	
 	//load what the user has input for a set of games
