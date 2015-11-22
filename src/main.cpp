@@ -4,7 +4,12 @@
 
 #include <iostream>
 #include <fstream>
-#include <pthread.h>
+
+#include <utility>
+#include <thread>
+#include <chrono>
+#include <functional>
+#include <atomic>
 
 #include "json/json.h"
 
@@ -21,11 +26,12 @@ void* gameRunner(void* g)
 	//start timing and go through each turn, and each phase each turn until victory
 	cout << "Simulating..." << endl;
 	game->play(); //TODO some kind of while (1), but with some feedback and system.process() or whatever
+	
+	delete game;
 }
 
 int main(int argc, char *argv[])
 {
-	pthread_t gameThread;
 	ifstream ifs;
 	Json::Value races, setup;
 	
@@ -37,7 +43,7 @@ int main(int argc, char *argv[])
 	}
 	
 	cout << "Loading game files..." << endl;
-	ifs.open(GD_RACES, ifstream::in);
+	ifs.open(GD_RACES);//, ifstream::in);
 	if (!ifs.is_open())
 	{
 		cerr << "Unable to load game file: " << GD_RACES << endl;
@@ -46,12 +52,22 @@ int main(int argc, char *argv[])
 	
 	Json::Reader rdr;
 	rdr.parse(ifs, races, false);
+	ifs.close();
+	
 	//load all game constants
 	
 	cout << "Loading game configuration..." << endl;
+	ifs.open(argv[1]);
+	if (!ifs.is_open())
+	{
+		cerr << "Unable to load game setup file: " << argv[1] << endl;
+		return -1;
+	}
+	rdr.parse(ifs, setup, false);
+	ifs.close();
 	
 	cout << "Game parameters..." << endl;
-	Game* game = new Game(setup);
+	Game* game = new Game(GameState(setup));
 	//setup races, techs (for number of players), decide first player, etc.
 	
 	//load what the user has input for a set of games
@@ -59,14 +75,9 @@ int main(int argc, char *argv[])
 	
 	//Could bring Qt back and use QThreads
 	
-	int iret1 = pthread_create(&gameThread, NULL, gameRunner, (void*)game);
-	if (iret1)
-	{
-		cerr << "Error - pthread_create() return code: " << iret1 << endl;
-		//exit(EXIT_FAILURE);
-	}
+	thread gameThread(gameRunner, game);
 	
-	delete game;
+	gameThread.join();
 	
 	return 0;
 	

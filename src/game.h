@@ -2,8 +2,7 @@
 
 #include <list>
 
-#include "json/json.h"
-
+#include "GameState.h"
 #include "sector.h"
 #include "ship.h"
 #include "player.h"
@@ -15,6 +14,6 @@ public:
 	std::list<Sector*> sectors;
 	
 	Game();
-	Game(Json::Value setup); //json setup parameters
+	Game(GameState initialState);
 	void play(); //main loop
 };

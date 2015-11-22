@@ -5,7 +5,7 @@ Game::Game()
 	
 }
 
-Game::Game(Json::Value setup)
+Game::Game(GameState setup)
 {
 	
 }

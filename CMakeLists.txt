@@ -9,6 +9,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules/")
 
 #set(THREADS_PREFER_PTHREAD_FLAG ON) #prefer? required
 
+SET(CMAKE_CXX_STANDARD 11)
+
 find_package(Threads REQUIRED)
 find_package(jsoncpp REQUIRED)
 
