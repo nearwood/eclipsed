@@ -67,7 +67,8 @@ int main(int argc, char *argv[])
 	ifs.close();
 	
 	cout << "Game parameters..." << endl;
-	Game* game = new Game(GameState::fromJson(setup));
+	GameState initialState = GameState::fromJson(setup);
+	Game* game = new Game(initialState);
 	//setup races, techs (for number of players), decide first player, etc.
 	
 	//load what the user has input for a set of games
@@ -78,6 +79,8 @@ int main(int argc, char *argv[])
 	thread gameThread(gameRunner, game);
 	
 	gameThread.join();
+	
+	//delete all things
 	
 	return 0;
 	

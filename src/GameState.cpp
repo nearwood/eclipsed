@@ -1,9 +1,25 @@
 
 #include "GameState.h"
 
-GameState GameState::fromJson(Json::Value initialState)
+GameState::GameState()
+:round(0)
 {
 	
+}
+
+GameState::GameState(const GameState& other)
+:round(other.round)
+{
+	players = other.players;
+	sectors = other.sectors;
+	tech = other.tech;
+	//children remains empty
+}
+
+GameState GameState::fromJson(Json::Value initialState)
+{
+	GameState s;
+	return s;
 }
 
 bool GameState::isGameOver()

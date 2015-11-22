@@ -20,6 +20,8 @@ public:
 	std::list<GameState*> children;
 	
 public:
+	GameState();
+	GameState(const GameState& other);
 	static GameState fromJson(Json::Value initialState);
 	bool isGameOver();
 	int getVP(Player* p);
