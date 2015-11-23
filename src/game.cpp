@@ -4,7 +4,8 @@
 
 using namespace std;
 
-/*
+/* http://www.scribd.com/doc/77523125/Eclipse-English-Rule-Book
+
 function minimax(node, depth, maximizingPlayer)
     if depth = 0 or node is a terminal node
         return the heuristic value of node

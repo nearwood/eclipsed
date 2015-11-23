@@ -1,5 +1,4 @@
-#ifndef SECTOR_H
-#define SECTOR_H
+#pragma once
 
 class SectorLink;
 
@@ -16,9 +15,9 @@ public:
 	std::list<Planet> planets;
 	bool ancientSpawn;
 	bool ancientBonus;
-	int id;
+	short int id;
 
-	std::list<Disc*> discs;
+	Disc* influence;
 	std::list<Ship*> ships;
 
 	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;
@@ -26,5 +25,3 @@ public:
 
     Sector();
 };
-
-#endif // SECTOR_H

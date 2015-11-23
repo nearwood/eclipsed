@@ -13,7 +13,7 @@ class GameState
 {
 public:
 	short int round;
-	enum Phase {};
+	enum Phase {Action, Combat};
 	std::list<Player*> players;
 	std::list<Sector*> sectors; //some kind of map representation... but not a tree since the core and each player start separate?
 	std::list<Tech*> tech; //shown for purchase and remaining?

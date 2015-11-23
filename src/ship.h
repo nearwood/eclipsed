@@ -1,5 +1,4 @@
-#ifndef SHIP_H
-#define SHIP_H
+#pragma once
 
 class Ship;
 class Sector;
@@ -20,5 +19,3 @@ public:
 
 	Ship();
 };
-
-#endif // SHIP_H
