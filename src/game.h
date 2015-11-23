@@ -13,8 +13,9 @@ class Game
 	uint depth;
 	
 public:
-	std::list<Player*> players;
-	std::list<Sector*> sectors;
+	//things available from the game itself, not any single instance
+	static std::list<Player*> players;
+	static std::list<Sector*> sectors;
 	
 	Game(GameState initialState);
 	void play(); //main loop

@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 	rdr.parse(ifs, races, false);
 	ifs.close();
 	
-	cout << "Loaded races: " << sizeof(races) << " bytes" << endl;
+	//cout << "Loaded races: " << sizeof(races) << " bytes" << endl;
 	
 	ifs.open(GD_DIR GD_SECTORS);
 	if (!ifs.is_open())
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
 	rdr.parse(ifs, sectors, false);
 	ifs.close();
 	
-	cout << "Loaded sectors: " << sizeof(sectors) << " bytes" << endl;
+	//cout << "Loaded sectors: " << sizeof(sectors) << " bytes" << endl;
 	
 	cout << "Loading game configuration..." << endl;
 	ifs.open(argv[1]);
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
 	cout << "Game parameters..." << endl;
 	GameState initialState = GameState::fromJson(setup);
 	Game* game = new Game(initialState);
+	
 	//setup races, techs (for number of players), decide first player, etc.
 	
 	//load what the user has input for a set of games
