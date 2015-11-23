@@ -14,7 +14,7 @@ class Sector
 public:
 	std::list<Planet> planets;
 	bool ancientSpawn;
-	bool ancientBonus;
+	bool ancientBonus; //?
 	short int id;
 
 	Disc* influence;

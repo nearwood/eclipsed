@@ -15,7 +15,10 @@
 
 #include "game.h"
 
-#define GD_RACES "../data/races.json"
+#define GD_DIR "../data/"
+#define GD_RACES "races.json"
+#define GD_SECTORS "sectors.json"
+//#define GD_TECH "tech.json"
 
 using namespace std;
 
@@ -33,7 +36,8 @@ void* gameRunner(void* g)
 int main(int argc, char *argv[])
 {
 	ifstream ifs;
-	Json::Value races, setup;
+	Json::Reader rdr;
+	Json::Value races, sectors, setup;
 	
 	if (argc <= 1)
 	{
@@ -43,18 +47,30 @@ int main(int argc, char *argv[])
 	}
 	
 	cout << "Loading game files..." << endl;
-	ifs.open(GD_RACES);//, ifstream::in);
+	//load all game constants
+	ifs.open(GD_DIR GD_RACES);
 	if (!ifs.is_open())
 	{
-		cerr << "Unable to load game file: " << GD_RACES << endl;
+		cerr << "Unable to load game file: " << GD_DIR GD_RACES << endl;
 		return -1;
 	}
 	
-	Json::Reader rdr;
 	rdr.parse(ifs, races, false);
 	ifs.close();
 	
-	//load all game constants
+	cout << "Loaded races: " << sizeof(races) << " bytes" << endl;
+	
+	ifs.open(GD_DIR GD_SECTORS);
+	if (!ifs.is_open())
+	{
+		cerr << "Unable to load game file: " << GD_DIR GD_SECTORS << endl;
+		return -1;
+	}
+	
+	rdr.parse(ifs, sectors, false);
+	ifs.close();
+	
+	cout << "Loaded sectors: " << sizeof(sectors) << " bytes" << endl;
 	
 	cout << "Loading game configuration..." << endl;
 	ifs.open(argv[1]);

@@ -15,6 +15,7 @@ public:
 	short int round;
 	enum Phase {Action, Combat};
 	std::list<Player*> players;
+	Player* currentPlayer;
 	std::list<Sector*> sectors; //some kind of map representation... but not a tree since the core and each player start separate?
 	std::list<Tech*> tech; //shown for purchase and remaining?
 	std::list<GameState*> children;

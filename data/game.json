@@ -1,0 +1,12 @@
+{[
+	{
+		player: 1
+		startingSquare: 221,
+		name: "MECHANEMA"
+	},
+	{
+		player: 2,
+		startingSquare: 222,
+		name: "HYDRAN PROGRESS"
+	}
+]}
