@@ -24,11 +24,11 @@ using namespace std;
 
 void* gameRunner(void* g)
 {
-	cout << "Simulation thread start..." << endl;
+	cout << "Simulation thread start." << endl;
 	Game* game = (Game*)g;
 	//start timing and go through each turn, and each phase each turn until victory
-	cout << "Simulating..." << endl;
 	game->play(); //TODO some kind of while (1), but with some feedback and system.process() or whatever
+	cout << "Simulation thread end." << endl;
 	
 	delete game;
 }
@@ -94,6 +94,8 @@ int main(int argc, char *argv[])
 	//Could bring Qt back and use QThreads
 	
 	thread gameThread(gameRunner, game);
+	
+	//Do some UI stuff here.
 	
 	gameThread.join();
 	
