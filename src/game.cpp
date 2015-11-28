@@ -35,7 +35,8 @@ Game::Game(GameState setup)
 void Game::play()
 {
 	cout << "Game start..." << endl;
-	this->play(&startState, 0, startState.getFirstPlayer());
+	int v = this->play(&startState, 0, startState.getFirstPlayer());
+	cout << "Game end: " << v << endl;
 }
 
 //not sure how to handle >2 players...
@@ -47,21 +48,23 @@ int Game::play(GameState* s, uint depth, Player* p)
 		//for (Player* p : players)
 		if (s->getCurrentPlayer() == p)
 		{
+			int bestValue = -1000;
 			for (GameState* c : s->getChildren())
 			{
-				int bestValue = -1000;
 				int value = this->play(c, depth + 1, p); //s->nextPlayer?
-				return max(value, bestValue);
+				bestValue = max(value, bestValue);
 			}
+			return bestValue;
 		}
 		else
 		{
+			int bestValue = 1000;
 			for (GameState* c : s->getChildren())
 			{
-				int bestValue = 1000;
 				int value = this->play(c, depth + 1, p); //s->nextPlayer?
-				return min(value, bestValue);
+				bestValue = min(value, bestValue);
 			}
+			return bestValue;
 		}
 		
 	//for p1...pN

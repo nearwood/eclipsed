@@ -25,7 +25,7 @@ GameState GameState::fromJson(Json::Value initialState)
 bool GameState::isGameOver()
 {
 	//do some trivial stuff quickly to determine who won
-	return true;
+	return false;
 }
 
 int GameState::getVP(Player* p)
