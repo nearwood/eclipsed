@@ -11,16 +11,20 @@
 
 class GameState
 {
+private:
+	std::list<GameState*> children;
+	std::list<GameState*> generateChildren();
+
 public:
-	short int round;
-	enum Phase {Action, Combat};
 	std::list<Player*> players;
-	Player* currentPlayer;
+	Player* currentPlayer; //const?
 	std::list<Sector*> sectors; //some kind of map representation... but not a tree since the core and each player start separate?
 	std::list<Tech*> tech; //shown for purchase and remaining?
-	std::list<GameState*> children;
 	
-public:
+	enum Phase {Action, Combat, Upkeep, Cleanup} phase;
+	short int round;
+	bool pass;
+	
 	GameState();
 	GameState(const GameState& other);
 	static GameState fromJson(Json::Value initialState);

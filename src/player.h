@@ -12,6 +12,9 @@ typedef unsigned char sint;
 class InfluenceDisc;
 typedef InfluenceDisc Disc;
 
+/**
+ * This is a misnomer, this represents a player board rather than a player agent.
+ */
 class Player
 {
 public:

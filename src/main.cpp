@@ -1,15 +1,39 @@
+/* eclipsed
+ * Copyright (C) 2015 Nicholas Earwood
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
 //#include <QApplication>
 
 //#include "mainwindow.h"
 
+//C++
 #include <iostream>
 #include <fstream>
 
+//C++11
 #include <utility>
 #include <thread>
 #include <chrono>
 #include <functional>
 #include <atomic>
+
+//C, POSIX
+#include <unistd.h>
+#include <getopt.h>
 
 #include "json/json.h"
 
@@ -21,6 +45,12 @@
 //#define GD_TECH "tech.json"
 
 using namespace std;
+
+/** TODO
+ * VERBOSE #define to remove ouput in sim thread
+ * shared memory or whatever for ITC.
+ * 
+ */
 
 void* gameRunner(void* g)
 {
@@ -45,6 +75,13 @@ int main(int argc, char *argv[])
 		cout << "Usage: " << argv[0] << " <game.json>" << endl;
 		return 0;
 	}
+	
+	/* argv == --version
+	eclipsed version 1, Copyright (C) 2015 Nicholas Earwood
+	License GPLv2: GNU GPL version 2 <http://gnu.org/licenses/gpl.html>.
+	eclipsed comes with ABSOLUTELY NO WARRANTY, to the extent permitted by law.
+	This is free software, and you are welcome to redistribute it
+	*/
 	
 	cout << "Loading game files..." << endl;
 	//load all game constants
