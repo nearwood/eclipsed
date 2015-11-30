@@ -3,7 +3,7 @@
 class Ship;
 class Sector;
 
-#include "player.h"
+#include "PlayerBoard.h"
 #include "sector.h"
 
 class Ship
@@ -14,7 +14,7 @@ public:
 
 	int damage;
 
-	Player *owner;
+	PlayerBoard *owner;
 	Sector *location;
 
 	Ship();

@@ -5,7 +5,7 @@
 #include "GameState.h"
 #include "sector.h"
 #include "ship.h"
-#include "player.h"
+#include "PlayerBoard.h"
 
 class Game
 {
@@ -14,11 +14,11 @@ class Game
 	
 public:
 	//things available from the game itself, not any single instance
-	static std::list<Player*> players;
+	static std::list<PlayerBoard> players;
 	static std::list<Sector*> sectors;
 	
 	Game(GameState initialState);
 	void play(); //main loop
-	int play(GameState* s, uint depth, Player* p);
+	int play(GameState* s, uint depth, PlayerBoard* p);
 	void turn();
 };

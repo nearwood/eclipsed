@@ -40,7 +40,7 @@ void Game::play()
 }
 
 //not sure how to handle >2 players...
-int Game::play(GameState* s, uint depth, Player* p)
+int Game::play(GameState* s, uint depth, PlayerBoard* p)
 {
 	cout << "Depth: " << depth << ", Play: " << s << endl;
 	while (!s->isGameOver() && depth != 10)
@@ -66,15 +66,6 @@ int Game::play(GameState* s, uint depth, Player* p)
 			}
 			return bestValue;
 		}
-		
-	//for p1...pN
-		//action phase
-		//starting with p1
-		//allow action (or pass)
-		//go to next player
-		//repeat until all players pass, first passer is p1 next round
-		//combat phase
-		//upkeep phase
 	}
 	
 	return s->getVP(p);

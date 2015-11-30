@@ -1,11 +1,12 @@
 #pragma once
 
-#include "player.h"
+#include "PlayerBoard.h"
 #include "sector.h"
 
+//Deprecated... this is too complex
 class InfluenceDisc
 {
-	Player* owner;
+	PlayerBoard* owner;
 	Sector* location;
 };
 

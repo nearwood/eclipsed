@@ -18,8 +18,11 @@ JSON Game initial state
 4. Adjustable AI look-ahead
 
 ## Notes
-Mitigating Horizon Effect? What are important moves? System capture, player death, etc.?
-Game limited to 9 rounds
+* Mitigating Horizon Effect? What are important moves? System capture, player death, etc.?
+* Game limited to 9 rounds
+* Might want to have option for statistical avgs of combat (pass-fail) instead of chance
+* Same as above for sector generation
+
 
 ## Possible games states
 * 37 sectors hexes,
@@ -38,6 +41,8 @@ Game limited to 9 rounds
 * pass, then do limited reactions (upgrade, build, move)
 
 ## Plan of Attack
+- Do nothing and pass
+- Upkeep
 - Colonize home system, do upkeep (no vp)
 - Explore action, choose sector (ship/disc adjacent), choose location, and orientation (wormholes must align) tiles (no vp)
 - Colonize non-combat discovered sectors (first vp)

@@ -28,7 +28,7 @@ SET(SOURCES src/main.cpp
 			src/sector.cpp
 			src/ship.cpp
 			src/game.cpp
-			src/player.cpp
+			src/PlayerBoard.cpp
 			src/ring2.cpp
 			src/sectorlink.cpp
 			src/startingsector.cpp
@@ -37,6 +37,19 @@ SET(SOURCES src/main.cpp
 			src/ring3.cpp
 			src/shipblueprint.cpp
 			src/tech.cpp)
+
+
+# Set a default build type for single-configuration
+# CMake generators if no build type is set.
+IF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+   SET(CMAKE_BUILD_TYPE Debug)
+ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+
+# Select flags.
+SET(CMAKE_CXX_FLAGS "-Wall -fno-rtti")
+SET(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O2 -g")
+SET(CMAKE_CXX_FLAGS_RELEASE "-O2")
+SET(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")
 
 #source_group("Source Files" FILES ${SOURCES})
 #source_group(includes FILES ${INCLUDES})

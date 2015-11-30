@@ -1,6 +1,6 @@
 #pragma once
 
-class Player;
+class PlayerBoard;
 
 #include "ship.h"
 
@@ -15,12 +15,13 @@ typedef InfluenceDisc Disc;
 /**
  * This is a misnomer, this represents a player board rather than a player agent.
  */
-class Player
+class PlayerBoard
 {
 public:
 	enum Color {Red, Green, Blue, Yellow, White, Black};
 	
 	bool pass;
+	short int colonies;
 	Color color;
 	
 	sint e, m, s; //economy, minerals, science
@@ -30,5 +31,5 @@ public:
 	
 	std::list<Ship*> deployedShips, unbuiltShips;
 	
-	Player();
+	PlayerBoard();
 };

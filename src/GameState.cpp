@@ -8,7 +8,10 @@ GameState::GameState()
 }
 
 GameState::GameState(const GameState& other)
-:round(other.round)
+:phase(other.phase),
+round(other.round),
+currentPlayer(other.currentPlayer),
+firstPlayer(other.firstPlayer)
 {
 	players = other.players;
 	sectors = other.sectors;
@@ -28,7 +31,7 @@ bool GameState::isGameOver()
 	return false;
 }
 
-int GameState::getVP(Player* p)
+int GameState::getVP(PlayerBoard* p)
 {
 	//assuming p is in list, how many VP does it have?
 	return 0;
@@ -58,12 +61,12 @@ int GameState::getVP(Player* p)
 	*/
 }
 
-Player* GameState::getFirstPlayer()
+PlayerBoard* GameState::getFirstPlayer()
 {
 	return players.size() > 0 ? players.front() : NULL;
 }
 
-Player* GameState::getCurrentPlayer()
+PlayerBoard* GameState::getCurrentPlayer()
 {
 	return players.size() > 0 ? players.front() : NULL;
 }
@@ -78,9 +81,46 @@ std::list<GameState*> GameState::getChildren()
 
 std::list<GameState*> GameState::generateChildren()
 {
-	//actions/pass/reaction, colonize
-	//when everyone passes combat phase, which is random
+	//build, upgrade, research, explore, move, influence, colonize, diplomacy, pass
+	//when everyone passes combat phase
 	//combat is random
+	PlayerBoard* p = this->currentPlayer; //XXX
+	
+	
+	
+	if (p && !p->pass)
+	{
+		GameState* child = new GameState(*this);
+		child->currentPlayer->pass = true;
+		children.push_back(child);
+		
+		//check if first player to pass
+		for (PlayerBoard* l : child->players)
+		{
+			if (l->pass && l != child->currentPlayer)
+			{
+				firstPlayer = l;
+				break;
+			}
+		}
+	}
+	else
+	{//reactions
+		//build, upgrade, move
+	}
+	
+	
+	
+	//for p1...pN
+	//action phase
+	//starting with p1
+	//allow action (or pass)
+	//go to next player
+	//repeat until all players pass, first passer is p1 next round
+	
+	//combat phase
+	//upkeep phase
+	//cleanup
 	
 	
 }
