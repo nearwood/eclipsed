@@ -8,10 +8,10 @@ GameState::GameState()
 }
 
 GameState::GameState(const GameState& other)
-:phase(other.phase),
-round(other.round),
-currentPlayer(other.currentPlayer),
-firstPlayer(other.firstPlayer)
+:currentPlayer(other.currentPlayer),
+firstPlayer(other.firstPlayer),
+phase(other.phase),
+round(other.round)
 {
 	players = other.players;
 	sectors = other.sectors;
@@ -122,5 +122,5 @@ std::list<GameState*> GameState::generateChildren()
 	//upkeep phase
 	//cleanup
 	
-	
+	return children;
 }

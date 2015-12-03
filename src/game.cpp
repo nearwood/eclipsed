@@ -27,7 +27,7 @@ minimax(origin, depth, TRUE)
 */
 
 Game::Game(GameState setup)
-:depth(0), startState(setup)
+:startState(setup), depth(0)
 {
 	
 }

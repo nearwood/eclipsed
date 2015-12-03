@@ -61,6 +61,8 @@ void* gameRunner(void* g)
 	cout << "Simulation thread end." << endl;
 	
 	delete game;
+	
+	return NULL;
 }
 
 int main(int argc, char *argv[])
