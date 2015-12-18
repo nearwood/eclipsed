@@ -22,6 +22,21 @@ round(other.round)
 GameState GameState::fromJson(Json::Value initialState)
 {
 	GameState s;
+	
+	const Json::Value players = initialState["players"];
+	for (uint i = 0; i < players.size(); ++i)
+	{
+		Json::Value po = players[i];
+		PlayerBoard *pb = new PlayerBoard();
+		pb->colonies = 0;
+		pb->color = PlayerBoard::Color::Red;
+		pb->e = 10;
+		pb->m = 10;
+		pb->s = 10;
+		pb->name = po["name"].asString();
+		s.players.push_front(pb);
+	}
+	
 	return s;
 }
 
@@ -84,9 +99,7 @@ std::list<GameState*> GameState::generateChildren()
 	//build, upgrade, research, explore, move, influence, colonize, diplomacy, pass
 	//when everyone passes combat phase
 	//combat is random
-	PlayerBoard* p = this->currentPlayer; //XXX
-	
-	
+	PlayerBoard* p = getCurrentPlayer(); //XXX
 	
 	if (p && !p->pass)
 	{

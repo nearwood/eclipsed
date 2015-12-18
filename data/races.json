@@ -1,49 +1,49 @@
 {[
 	{
-		name: "ERIDANI EMPIRE",
-		color: "green",
-		moves: 2,
-		upgrade: 2,
-		build: 2,
-		special: [
+		"name": "ERIDANI EMPIRE",
+		"color": "green",
+		"moves": 2,
+		"upgrade": 2,
+		"build": 2,
+		"special": [
 			"-2 influence discs",
 			"Draws 2 random reputation tiles at game start"
 		],
-		rep: 4,
-		dip: 4,
-		tech: ["Gauss Shield", "Fusion Drive", "Plasma Cannon"],
-		trade: 3,
-		storage: [26, 2, 4],
-		sector: 222
+		"rep": 4,
+		"dip": 4,
+		"tech": ["Gauss Shield", "Fusion Drive", "Plasma Cannon"],
+		"trade": 3,
+		"storage": [26, 2, 4],
+		"sector": 222
 	},{
-		name: "HYDRAN PROGRESS",
-		moves: 2,
-		color: "blue",
-		upgrade: 2,
-		build: 2,
-		special: [
+		"name": "HYDRAN PROGRESS",
+		"moves": 2,
+		"color": "blue",
+		"upgrade": 2,
+		"build": 2,
+		"special": [
 			"can buy two research per research action",
 			"place pop cube in advanced science square in starting system"
 		],
-		rep: 3,
-		dip: 4,
-		tech: ["Advanced Labs"],
-		trade: 3,
-		storage: [2, 5, 2],
-		sector: 224
+		"rep": 3,
+		"dip": 4,
+		"tech": ["Advanced Labs"],
+		"trade": 3,
+		"storage": [2, 5, 2],
+		"sector": 224
 	},
-		name: "MECHANEMA",
-		color: "white",
-		moves: 2,
-		upgrade: 3,
-		build: 3,
-		special: [
+		"name": "MECHANEMA",
+		"color": "white",
+		"moves": 2,
+		"upgrade": 3,
+		"build": 3,
+		"special": [
 			"-1 build costs"
 		],
-		rep: 4,
-		dip: 4,
-		tech: ["Positron Computer"],
-		trade: 3,
-		storage: [3, 3, 3],
-		sector: 230
+		"rep": 4,
+		"dip": 4,
+		"tech": ["Positron Computer"],
+		"trade": 3,
+		"storage": [3, 3, 3],
+		"sector": 230
 ]}
