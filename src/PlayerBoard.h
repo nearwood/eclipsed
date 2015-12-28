@@ -13,23 +13,25 @@ class InfluenceDisc;
 typedef InfluenceDisc Disc;
 
 /**
- * This is a misnomer, this represents a player board rather than a player agent.
+ * Might want to keep references to original name, color, to try and keep mem down? Not that big of a deal?
  */
 class PlayerBoard
 {
 public:
 	enum Color {Red, Green, Blue, Yellow, White, Black};
 	
+	sint num; //play order
 	bool pass;
 	short int colonies;
-	Color color;
+	Color color; //TODO just keep ref to original?
 	
 	sint e, m, s; //economy, minerals, science
 	std::list<Disc*> infAvailable, infSpent;
 	
-	std::string name;
+	std::string name; //TODO just keep ref to original?
 	
 	std::list<Ship*> deployedShips, unbuiltShips;
 	
 	PlayerBoard();
+	PlayerBoard(const PlayerBoard& other);
 };

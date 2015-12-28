@@ -17,7 +17,7 @@ private:
 
 public:
 	std::list<PlayerBoard*> players;
-	PlayerBoard *currentPlayer, *firstPlayer;
+	std::string currentPlayer, firstPlayer, lastFirstPlayer; //dumb but works for now
 	std::list<Sector*> sectors; //some kind of map representation... but not a tree since the core and each player start separate?
 	//also, should just keep one large, static list of all sectors and then some state of which ones are placed
 	std::list<Tech*> tech; //shown for purchase and remaining?
@@ -33,6 +33,8 @@ public:
 	int getVP(PlayerBoard* p);
 	PlayerBoard* getFirstPlayer();
 	PlayerBoard* getCurrentPlayer();
+	PlayerBoard* getNextPlayer();
+	PlayerBoard* getLastFirstPlayer();
 	std::list<GameState*> getChildren();
 	
 	//hashmap of player*->PlayerState?

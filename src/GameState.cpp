@@ -10,11 +10,14 @@ GameState::GameState()
 GameState::GameState(const GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
+lastFirstPlayer(other.lastFirstPlayer),
 phase(other.phase),
 round(other.round)
 {
-	players = other.players;
-	sectors = other.sectors;
+	for (auto it = other.players.cbegin(); it != other.players.cend(); ++it)
+		players.push_back(new PlayerBoard(**it));
+	
+	//sectors = other.sectors;
 	tech = other.tech;
 	//children remains empty
 }
@@ -33,8 +36,16 @@ GameState GameState::fromJson(Json::Value initialState)
 		pb->e = 10;
 		pb->m = 10;
 		pb->s = 10;
-		pb->name = po["name"].asString();
+		pb->name = po.get("name", "UNKNOWN").asString();
 		s.players.push_front(pb);
+		
+		int playerNum = po.get("player", 0).asInt();
+		if (playerNum == 1 || i == 0)
+		{
+			s.firstPlayer = pb->name;
+			s.lastFirstPlayer = pb->name;
+			s.currentPlayer = pb->name;
+		}
 	}
 	
 	return s;
@@ -78,12 +89,54 @@ int GameState::getVP(PlayerBoard* p)
 
 PlayerBoard* GameState::getFirstPlayer()
 {
-	return players.size() > 0 ? players.front() : NULL;
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+		if ((*it)->name == firstPlayer) return *it;
+	
+	return nullptr;
 }
 
 PlayerBoard* GameState::getCurrentPlayer()
 {
-	return players.size() > 0 ? players.front() : NULL;
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+		if ((*it)->name == currentPlayer) return *it;
+	
+	return nullptr;
+}
+
+PlayerBoard* GameState::getLastFirstPlayer()
+{
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+		if ((*it)->name == lastFirstPlayer) return *it;
+	
+	return nullptr;
+}
+
+PlayerBoard* GameState::getNextPlayer()
+{
+	//get the player to our "left", the next player
+	PlayerBoard* p = getCurrentPlayer();
+	PlayerBoard* lfp = getLastFirstPlayer();
+	
+	if (p)
+	{
+		sint nextNum = p->num + 1;
+		if (nextNum > players.size())
+			nextNum = 1;
+		
+		for (auto it = players.cbegin(); it != players.cend(); ++it)
+		{
+			if (nextNum == (*it)->num)
+			{
+				//if the next player is the previous first player (irk), a round has ended.
+				if (nextNum == lfp->num)
+					return nullptr;
+				else
+					return *it;
+			}
+		}
+	}
+	
+	return nullptr; //TODO should throw an error
 }
 
 std::list<GameState*> GameState::getChildren()
@@ -94,28 +147,42 @@ std::list<GameState*> GameState::getChildren()
 		return children;
 }
 
+/**
+ * Get a list of resulting board states that constitute all possibilities for a player.
+ */
 std::list<GameState*> GameState::generateChildren()
 {
 	//build, upgrade, research, explore, move, influence, colonize, diplomacy, pass
 	//when everyone passes combat phase
 	//combat is random
-	PlayerBoard* p = getCurrentPlayer(); //XXX
+	PlayerBoard* p = getCurrentPlayer();
 	
 	if (p && !p->pass)
 	{
-		GameState* child = new GameState(*this);
-		child->currentPlayer->pass = true;
-		children.push_back(child);
+		GameState* childState = new GameState(*this);
+		PlayerBoard *childBoard = childState->getCurrentPlayer();
+		//PlayerBoard *childBoard = new PlayerBoard(*p);
+		childBoard->pass = true;
 		
-		//check if first player to pass
-		for (PlayerBoard* l : child->players)
+		//pass first player token.
+		bool firstPass = true;
+		for (PlayerBoard* l : childState->players)
 		{
-			if (l->pass && l != child->currentPlayer)
+			if (l->pass && l != childBoard)
 			{
-				firstPlayer = l;
+				firstPass = false;
 				break;
 			}
 		}
+		
+		if (firstPass)
+		{
+			//childBoard->currentPlayer = getNextPlayer()->name; //XXX
+			childState->firstPlayer = childBoard->name;
+			childState->lastFirstPlayer = childBoard->name;
+		}
+		
+		children.push_back(childState);
 	}
 	else
 	{//reactions

@@ -1,7 +1,7 @@
 {
 	"players": [
 		{
-			"player": 1
+			"player": 1,
 			"startingSquare": 221,
 			"name": "MECHANEMA"
 		},

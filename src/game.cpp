@@ -48,6 +48,7 @@ int Game::play(GameState* s, uint depth, PlayerBoard* p)
 		//for (Player* p : players)
 		if (s->getCurrentPlayer() == p)
 		{
+			cout << p->name << endl;
 			int bestValue = -1000;
 			for (GameState* c : s->getChildren())
 			{
@@ -58,6 +59,7 @@ int Game::play(GameState* s, uint depth, PlayerBoard* p)
 		}
 		else
 		{
+			cout << p->name << endl;
 			int bestValue = 1000;
 			for (GameState* c : s->getChildren())
 			{

@@ -122,6 +122,11 @@ int main(int argc, char *argv[])
 	ifs.close();
 	
 	cout << "Game parameters..." << endl;
+	
+	Json::StreamWriterBuilder wbuilder;
+	wbuilder["indentation"] = "\t";
+	cout << Json::writeString(wbuilder, setup) << endl;
+	
 	GameState initialState = GameState::fromJson(setup);
 	Game* game = new Game(initialState);
 	
