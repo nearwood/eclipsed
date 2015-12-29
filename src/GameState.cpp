@@ -26,6 +26,8 @@ GameState GameState::fromJson(Json::Value initialState)
 {
 	GameState s;
 	
+	s.round = 1;
+	
 	const Json::Value players = initialState["players"];
 	for (uint i = 0; i < players.size(); ++i)
 	{
@@ -51,9 +53,11 @@ GameState GameState::fromJson(Json::Value initialState)
 	return s;
 }
 
+//do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	//do some trivial stuff quickly to determine who won
+	if (round == 10) return true;
+	
 	return false;
 }
 
@@ -87,6 +91,16 @@ int GameState::getVP(PlayerBoard* p)
 	*/
 }
 
+std::unordered_map<PlayerBoard*, int> GameState::getScores()
+{
+	std::unordered_map<PlayerBoard*, int> scores;
+	
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+		scores.insert({ *it, getVP(*it) });
+	
+	return scores;
+}
+
 PlayerBoard* GameState::getFirstPlayer()
 {
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
@@ -113,9 +127,8 @@ PlayerBoard* GameState::getLastFirstPlayer()
 
 PlayerBoard* GameState::getNextPlayer()
 {
-	//get the player to our "left", the next player
+	//get the player to our "left"
 	PlayerBoard* p = getCurrentPlayer();
-	PlayerBoard* lfp = getLastFirstPlayer();
 	
 	if (p)
 	{
@@ -127,16 +140,23 @@ PlayerBoard* GameState::getNextPlayer()
 		{
 			if (nextNum == (*it)->num)
 			{
-				//if the next player is the previous first player (irk), a round has ended.
-				if (nextNum == lfp->num)
-					return nullptr;
-				else
-					return *it;
+				return *it;
 			}
 		}
 	}
 	
-	return nullptr; //TODO should throw an error
+	return nullptr; //invalid input
+}
+
+//Check to see if all players have passed.
+bool GameState::allPlayersPass()
+{
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+	{
+		if (!(*it)->pass) return false;
+	}
+	
+	return true;
 }
 
 std::list<GameState*> GameState::getChildren()
@@ -155,16 +175,34 @@ std::list<GameState*> GameState::generateChildren()
 	//build, upgrade, research, explore, move, influence, colonize, diplomacy, pass
 	//when everyone passes combat phase
 	//combat is random
-	PlayerBoard* p = getCurrentPlayer();
+	GameState* childState = new GameState(*this);
 	
-	if (p && !p->pass)
+	switch (childState->phase)
 	{
-		GameState* childState = new GameState(*this);
-		PlayerBoard *childBoard = childState->getCurrentPlayer();
-		//PlayerBoard *childBoard = new PlayerBoard(*p);
+		case Action:
+			//generate all actions
+		break;
+		
+		///All the below need to happen at once, combined into one state? (ie, 2 phases: Action or CombatUpkeepCleanup)
+		case Combat:
+			//do all potential combat from all potential actions (using averages?)
+		break;
+		case Upkeep:
+			//e,m,s balancing
+		break;
+		case Cleanup:
+			//prob. redundant.
+		break;
+	}
+	
+	
+	PlayerBoard *childBoard = childState->getCurrentPlayer();
+	if (childBoard && !childBoard->pass)
+	{//try passing if we haven't already
+		
 		childBoard->pass = true;
 		
-		//pass first player token.
+		//check if first pass
 		bool firstPass = true;
 		for (PlayerBoard* l : childState->players)
 		{
@@ -175,12 +213,24 @@ std::list<GameState*> GameState::generateChildren()
 			}
 		}
 		
+		//If first pass set next round's first player.
 		if (firstPass)
 		{
-			//childBoard->currentPlayer = getNextPlayer()->name; //XXX
+			childState->lastFirstPlayer = childState->firstPlayer;
 			childState->firstPlayer = childBoard->name;
-			childState->lastFirstPlayer = childBoard->name;
 		}
+		
+		//If last pass, end the round
+		if (allPlayersPass())
+		{
+			childState->phase = GameState::Phase::Combat;
+			childState->round++;
+		}
+		
+		//going to have to force a pass at some point, preferably before e = 0 as you cannot action all your owned space away, and there are diminishing returns up to that point.
+		
+		PlayerBoard *nextPlayer = getNextPlayer();
+		childState->currentPlayer = nextPlayer->name; //TODO Null check?
 		
 		children.push_back(childState);
 	}
@@ -197,10 +247,6 @@ std::list<GameState*> GameState::generateChildren()
 	//allow action (or pass)
 	//go to next player
 	//repeat until all players pass, first passer is p1 next round
-	
-	//combat phase
-	//upkeep phase
-	//cleanup
 	
 	return children;
 }

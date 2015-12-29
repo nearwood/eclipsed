@@ -35,42 +35,49 @@ Game::Game(GameState setup)
 void Game::play()
 {
 	cout << "Game start..." << endl;
-	int v = this->play(&startState, 0, startState.getFirstPlayer());
+	int v = this->play(&startState, 0);
 	cout << "Game end: " << v << endl;
 }
 
-//not sure how to handle >2 players...
-int Game::play(GameState* s, uint depth, PlayerBoard* p)
+std::unordered_map<PlayerBoard*, int> Game::play(GameState* s, uint depth)
 {
 	cout << "Depth: " << depth << ", Play: " << s << endl;
 	while (!s->isGameOver() && depth != 10)
 	{//while not at final state or max depth
-		//for (Player* p : players)
-		if (s->getCurrentPlayer() == p)
+		
+		//Need multiplayer (3+) logic
+		//for each player run minimax against all other players.
+		
+		PlayerBoard *cp = s->getCurrentPlayer();
+		for (auto it = s->players.cbegin(); it != s->players.cend(); ++it)
 		{
-			cout << p->name << endl;
-			int bestValue = -1000;
-			for (GameState* c : s->getChildren())
+			PlayerBoard *p = (*it);
+			if (p == cp)
 			{
-				int value = this->play(c, depth + 1, p); //s->nextPlayer?
-				bestValue = max(value, bestValue);
+				cout << "Perspective: " << p->name << endl;
+				int bestValue = -1000;
+				for (GameState* c : s->getChildren())
+				{
+					int value = this->play(c, depth + 1);
+					bestValue = max(value, bestValue);
+				}
+				return bestValue;
 			}
-			return bestValue;
-		}
-		else
-		{
-			cout << p->name << endl;
-			int bestValue = 1000;
-			for (GameState* c : s->getChildren())
+			else
 			{
-				int value = this->play(c, depth + 1, p); //s->nextPlayer?
-				bestValue = min(value, bestValue);
+				cout << cp->name << endl;
+				int bestValue = 1000;
+				for (GameState* c : s->getChildren())
+				{
+					int value = this->play(c, depth + 1);
+					bestValue = min(value, bestValue);
+				}
+				return bestValue;
 			}
-			return bestValue;
 		}
 	}
 	
-	return s->getVP(p);
+	return s->getScores();
 }
 
 void Game::turn()

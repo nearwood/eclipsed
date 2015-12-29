@@ -19,6 +19,6 @@ public:
 	
 	Game(GameState initialState);
 	void play(); //main loop
-	int play(GameState* s, uint depth, PlayerBoard* p);
+	std::unordered_map<PlayerBoard*, int>  play(GameState* s, uint depth);
 	void turn();
 };

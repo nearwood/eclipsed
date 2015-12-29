@@ -1,6 +1,7 @@
 #pragma once
 
 #include <list>
+#include <unordered_map>
 
 #include "json/json.h"
 
@@ -31,10 +32,12 @@ public:
 	static GameState fromJson(Json::Value initialState);
 	bool isGameOver();
 	int getVP(PlayerBoard* p);
+	std::unordered_map<PlayerBoard*, int> getScores();
 	PlayerBoard* getFirstPlayer();
 	PlayerBoard* getCurrentPlayer();
 	PlayerBoard* getNextPlayer();
 	PlayerBoard* getLastFirstPlayer();
+	bool allPlayersPass();
 	std::list<GameState*> getChildren();
 	
 	//hashmap of player*->PlayerState?

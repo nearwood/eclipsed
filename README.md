@@ -11,7 +11,24 @@ C++11-ish
 JSON Races, Ships, etc.? Will better allow for add-ons
 JSON Game initial state
 
+### Search Cost
+All possible player actions:
+* build up to 6 or so things limited by m
+* upgrade 2/6 or 3/6 ships with x number of upgrades available
+* research R techs with s science
+* exp 1/3 rings, with various placement around the map
+* move 2/3 units anywhere possible on map
+* influence x number of colones for I influence
+* colonize 1-3 (decolonize as well)
+* form diplomacy with x players (as boards permit)
+
+1st approx. at 270,000,000 possible moves per action
+Looks like you aren't going to be able to simulate more than a few moves, space limited?
+
 ## TODO
+-1: Assigning value to actions before a round ends (where actual VP might be earned) to distinguish good actions from bad ones.
+  I'm guessing all actions are equal until the round ends.
+0. All heap allocated stuff leaks, no deletes.
 1. Limit players to one race from each side of player board
 2. Alpha–beta pruning -- going to need this as there are many really stupid moves in this game
 3. AI Players min/max, humanize to min/max +/- 10%, etc.
@@ -22,7 +39,6 @@ JSON Game initial state
 * Game limited to 9 rounds
 * Might want to have option for statistical avgs of combat (pass-fail) instead of chance
 * Same as above for sector generation
-
 
 ## Possible games states
 * 37 sectors hexes,
