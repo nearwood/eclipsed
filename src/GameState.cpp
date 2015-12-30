@@ -153,9 +153,7 @@ PlayerBoard* GameState::getNextPlayer()
 bool GameState::allPlayersPass()
 {
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
-	{
 		if (!(*it)->pass) return false;
-	}
 	
 	return true;
 }
@@ -178,24 +176,7 @@ std::list<GameState*> GameState::generateChildren()
 	//combat is random
 	GameState* childState = new GameState(*this);
 	
-	switch (childState->phase)
-	{
-		case Action:
-			//generate all actions
-		break;
-		
-		///All the below need to happen at once, combined into one state? (ie, 2 phases: Action or CombatUpkeepCleanup)
-		case Combat:
-			//do all potential combat from all potential actions (using averages?)
-		break;
-		case Upkeep:
-			//e,m,s balancing
-		break;
-		case Cleanup:
-			//prob. redundant.
-		break;
-	}
-	
+	assert(childState->phase == Phase::Action)
 	
 	PlayerBoard *childBoard = childState->getCurrentPlayer();
 	if (childBoard && !childBoard->pass)
@@ -223,11 +204,16 @@ std::list<GameState*> GameState::generateChildren()
 		}
 		else if (allPlayersPass())
 		{//If last pass, end the round
-			childState->phase = GameState::Phase::Combat;
+			//childState->phase = GameState::Phase::Combat;
+			//TODO Do all phases here.
+			///All the below need to happen at once, combined into one state? (ie, 2 phases: Action or CombatUpkeepCleanup)
+			//COMBAT do all potential combat from all potential actions (using averages?)
+			//UPKEEP e,m,s balancing
+			//CLEANUP //prob. redundant.
 			childState->round++;
 		}
 		
-		//going to have to force a pass at some point, preferably before e = 0 as you cannot action all your owned space away, and there are diminishing returns up to that point.
+		//going to have to force a pass at some point, preferably soon after e < 0 as you cannot action all your owned space away, and there are diminishing returns up to that point.
 		
 		PlayerBoard *nextPlayer = getNextPlayer();
 		childState->currentPlayer = nextPlayer->name; //TODO Null check?

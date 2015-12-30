@@ -36,12 +36,16 @@ void Game::play()
 {
 	cout << "Game start..." << endl;
 	std::unordered_map<std::string, int> scores = this->play(&startState, 0);
-	cout << "Game end: " << endl; //<< scores << endl;
+	
+	for (auto it = scores.cbegin(); it != scores.cend(); ++it)
+		cout << it->first << ": " << it->second << endl;
+	
+	//cout << "Game end." << endl; //<< scores << endl;
 }
 
 std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 {
-	cout << "Depth: " << depth << ", Play: " << s << endl;
+	cout << "Round: " << s->round << ", Depth: " << depth << endl;
 	
 	if (s->isGameOver() || depth == 10)
 		return s->getScores();

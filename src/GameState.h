@@ -24,7 +24,7 @@ public:
 	std::list<Tech*> tech; //shown for purchase and remaining?
 	//same as sector, one static list of all tech, then each state has status of available ones
 	
-	enum Phase {Action, Combat, Upkeep, Cleanup} phase;
+	//enum Phase {Action, Combat, Upkeep, Cleanup} phase;
 	short int round;
 	
 	GameState();
