@@ -11,7 +11,6 @@ GameState::GameState(const GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
-phase(other.phase),
 round(other.round)
 {
 	for (auto it = other.players.cbegin(); it != other.players.cend(); ++it)
@@ -175,8 +174,6 @@ std::list<GameState*> GameState::generateChildren()
 	//when everyone passes combat phase
 	//combat is random
 	GameState* childState = new GameState(*this);
-	
-	assert(childState->phase == Phase::Action)
 	
 	PlayerBoard *childBoard = childState->getCurrentPlayer();
 	if (childBoard && !childBoard->pass)
