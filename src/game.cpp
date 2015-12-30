@@ -35,49 +35,64 @@ Game::Game(GameState setup)
 void Game::play()
 {
 	cout << "Game start..." << endl;
-	int v = this->play(&startState, 0);
-	cout << "Game end: " << v << endl;
+	std::unordered_map<std::string, int> scores = this->play(&startState, 0);
+	cout << "Game end: " << endl; //<< scores << endl;
 }
 
-std::unordered_map<PlayerBoard*, int> Game::play(GameState* s, uint depth)
+std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 {
 	cout << "Depth: " << depth << ", Play: " << s << endl;
-	while (!s->isGameOver() && depth != 10)
-	{//while not at final state or max depth
-		
-		//Need multiplayer (3+) logic
-		//for each player run minimax against all other players.
-		
-		PlayerBoard *cp = s->getCurrentPlayer();
-		for (auto it = s->players.cbegin(); it != s->players.cend(); ++it)
+	
+	if (s->isGameOver() || depth == 10)
+		return s->getScores();
+	
+	//while not at final state or max depth
+	
+	//Need multiplayer (3+) logic
+	//for each player run minimax against all other players.
+	
+	PlayerBoard *cp = s->getCurrentPlayer();
+	std::unordered_map<std::string, int> scores;
+	for (auto it = s->players.cbegin(); it != s->players.cend(); ++it)
+	{
+		PlayerBoard *p = (*it);
+		if (p == cp)
 		{
-			PlayerBoard *p = (*it);
-			if (p == cp)
+			cout << "Perspective: " << p->name << endl;
+			int bestValue = -1000;
+			for (GameState* c : s->getChildren())
 			{
-				cout << "Perspective: " << p->name << endl;
-				int bestValue = -1000;
-				for (GameState* c : s->getChildren())
-				{
-					int value = this->play(c, depth + 1);
-					bestValue = max(value, bestValue);
-				}
-				return bestValue;
+				std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
+				auto it = subScores.find(p->name);
+				int value = 0;
+				if (it != subScores.cend())
+					value = it->second;
+				
+				bestValue = max(value, bestValue);
 			}
-			else
+			
+			scores.insert({ p->name, bestValue });
+		}
+		else
+		{
+			cout << "Opponent: " << p->name << endl;
+			int bestValue = 1000;
+			for (GameState* c : s->getChildren())
 			{
-				cout << cp->name << endl;
-				int bestValue = 1000;
-				for (GameState* c : s->getChildren())
-				{
-					int value = this->play(c, depth + 1);
-					bestValue = min(value, bestValue);
-				}
-				return bestValue;
+				std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
+				auto it = subScores.find(p->name);
+				int value = 0;
+				if (it != subScores.cend())
+					value = it->second;
+				
+				bestValue = min(value, bestValue);
 			}
+			
+			scores.insert({ p->name, bestValue });
 		}
 	}
 	
-	return s->getScores();
+	return scores;
 }
 
 void Game::turn()

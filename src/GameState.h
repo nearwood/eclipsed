@@ -32,7 +32,7 @@ public:
 	static GameState fromJson(Json::Value initialState);
 	bool isGameOver();
 	int getVP(PlayerBoard* p);
-	std::unordered_map<PlayerBoard*, int> getScores();
+	std::unordered_map<std::string, int> getScores();
 	PlayerBoard* getFirstPlayer();
 	PlayerBoard* getCurrentPlayer();
 	PlayerBoard* getNextPlayer();

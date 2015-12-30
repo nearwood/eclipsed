@@ -39,6 +39,7 @@ GameState GameState::fromJson(Json::Value initialState)
 		pb->m = 10;
 		pb->s = 10;
 		pb->name = po.get("name", "UNKNOWN").asString();
+		pb->num = po.get("player", i + 1).asInt();
 		s.players.push_front(pb);
 		
 		int playerNum = po.get("player", 0).asInt();
@@ -91,12 +92,12 @@ int GameState::getVP(PlayerBoard* p)
 	*/
 }
 
-std::unordered_map<PlayerBoard*, int> GameState::getScores()
+std::unordered_map<std::string, int> GameState::getScores()
 {
-	std::unordered_map<PlayerBoard*, int> scores;
+	std::unordered_map<std::string, int> scores;
 	
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
-		scores.insert({ *it, getVP(*it) });
+		scores.insert({ (*it)->name, getVP(*it) });
 	
 	return scores;
 }
@@ -211,18 +212,17 @@ std::list<GameState*> GameState::generateChildren()
 				firstPass = false;
 				break;
 			}
+			
+			//TODO Do last pass check here
 		}
 		
-		//If first pass set next round's first player.
 		if (firstPass)
-		{
+		{//If first pass set next round's first player.
 			childState->lastFirstPlayer = childState->firstPlayer;
 			childState->firstPlayer = childBoard->name;
 		}
-		
-		//If last pass, end the round
-		if (allPlayersPass())
-		{
+		else if (allPlayersPass())
+		{//If last pass, end the round
 			childState->phase = GameState::Phase::Combat;
 			childState->round++;
 		}
@@ -238,8 +238,6 @@ std::list<GameState*> GameState::generateChildren()
 	{//reactions
 		//build, upgrade, move
 	}
-	
-	
 	
 	//for p1...pN
 	//action phase
