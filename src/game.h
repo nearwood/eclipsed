@@ -9,7 +9,7 @@
 
 class Game
 {
-	GameState startState;
+	GameState* startState;
 	uint depth;
 	
 public:
@@ -17,7 +17,7 @@ public:
 	static std::list<PlayerBoard> players;
 	static std::list<Sector*> sectors;
 	
-	Game(GameState initialState);
+	Game(GameState* initialState);
 	void play(); //main loop
 	std::unordered_map<std::string, int> play(GameState* s, uint depth);
 	void turn();

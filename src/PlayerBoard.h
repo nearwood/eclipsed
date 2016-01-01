@@ -3,6 +3,7 @@
 class PlayerBoard;
 
 #include "ship.h"
+#include "race.h"
 
 #include <list>
 #include <string>
@@ -18,20 +19,20 @@ typedef InfluenceDisc Disc;
 class PlayerBoard
 {
 public:
-	enum Color {Red, Green, Blue, Yellow, White, Black};
+	Race& race;
 	
 	sint num; //play order
 	bool pass;
 	short int colonies;
-	Color color; //TODO just keep ref to original?
 	
 	sint e, m, s; //economy, minerals, science
+	sint moves, builds, upgrades; //num builds, upgrades, moves used out of total
 	std::list<Disc*> infAvailable, infSpent;
 	
 	std::string name; //TODO just keep ref to original?
 	
 	std::list<Ship*> deployedShips, unbuiltShips;
 	
-	PlayerBoard();
-	PlayerBoard(const PlayerBoard& other);
+	PlayerBoard(Race& r);
+	PlayerBoard(PlayerBoard& other);
 };

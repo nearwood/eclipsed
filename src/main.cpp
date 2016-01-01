@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 	wbuilder["indentation"] = "\t";
 	cout << Json::writeString(wbuilder, setup) << endl;
 	
-	GameState initialState = GameState::fromJson(setup);
+	GameState* initialState = GameState::fromJson(races, sectors, setup);
 	Game* game = new Game(initialState);
 	
 	//setup races, techs (for number of players), decide first player, etc.

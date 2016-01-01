@@ -7,7 +7,7 @@ GameState::GameState()
 	
 }
 
-GameState::GameState(const GameState& other)
+GameState::GameState(GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
@@ -21,32 +21,64 @@ round(other.round)
 	//children remains empty
 }
 
-GameState GameState::fromJson(Json::Value initialState)
+GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState)
 {
-	GameState s;
+	GameState* s = new GameState();
 	
-	s.round = 1;
+	s->round = 1;
+	
+	//load all races
+	//load game json, players, and assign playerboards with race
+	//delete unused races
+	std::list<Race*> racesList;
+	const Json::Value racesJson = races["races"];
+	for (uint i = 0; i < racesJson.size(); ++i)
+	{
+		Json::Value jr = racesJson[i];
+		Race *r = new Race();
+		r->color = Race::Color::Red; //y do i care?
+		Json::Value storage = jr["storage"];
+		//assert storage.size() == 3
+		r->e = storage[0].asInt();
+		r->m = storage[1].asInt();
+		r->s = storage[2].asInt();
+		r->name = jr.get("name", "UNKNOWN").asString();
+		racesList.push_back(r);
+	}
 	
 	const Json::Value players = initialState["players"];
 	for (uint i = 0; i < players.size(); ++i)
 	{
 		Json::Value po = players[i];
-		PlayerBoard *pb = new PlayerBoard();
-		pb->colonies = 0;
-		pb->color = PlayerBoard::Color::Red;
-		pb->e = 10;
-		pb->m = 10;
-		pb->s = 10;
-		pb->name = po.get("name", "UNKNOWN").asString();
+		Race *race = nullptr;
+		//get the name of this player, find the race with that name and use that race as the base.
+		std::string name = po.get("name", "UNKNOWN").asString();
+		for (auto it = racesList.cbegin(); it != racesList.cend(); ++it)
+		{
+			if ((*it)->name == name)
+			{
+				race = *it;
+				break;
+			}
+		}
+		
+		if (!race)
+		{
+			//cerr << "Could not find race: " << name << endl;
+			continue;
+		}
+		
+		PlayerBoard *pb = new PlayerBoard(*race);
+		pb->name = race->name;
 		pb->num = po.get("player", i + 1).asInt();
-		s.players.push_front(pb);
+		s->players.push_back(pb);
 		
 		int playerNum = po.get("player", 0).asInt();
 		if (playerNum == 1 || i == 0)
 		{
-			s.firstPlayer = pb->name;
-			s.lastFirstPlayer = pb->name;
-			s.currentPlayer = pb->name;
+			s->firstPlayer = pb->name;
+			s->lastFirstPlayer = pb->name;
+			s->currentPlayer = pb->name;
 		}
 	}
 	

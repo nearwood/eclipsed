@@ -33,6 +33,7 @@ SET(SOURCES src/main.cpp
 			src/sectorlink.cpp
 			src/startingsector.cpp
 			#src/mainwindow.cpp
+			src/race.cpp
 			src/resource.cpp
 			src/ring3.cpp
 			src/shipblueprint.cpp

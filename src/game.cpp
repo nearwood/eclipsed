@@ -26,7 +26,7 @@ function minimax(node, depth, maximizingPlayer)
 minimax(origin, depth, TRUE)
 */
 
-Game::Game(GameState setup)
+Game::Game(GameState* setup)
 :startState(setup), depth(0)
 {
 	
@@ -35,7 +35,7 @@ Game::Game(GameState setup)
 void Game::play()
 {
 	cout << "Game start..." << endl;
-	std::unordered_map<std::string, int> scores = this->play(&startState, 0);
+	std::unordered_map<std::string, int> scores = this->play(startState, 0);
 	
 	for (auto it = scores.cbegin(); it != scores.cend(); ++it)
 		cout << it->first << ": " << it->second << endl;

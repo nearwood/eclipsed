@@ -1,5 +1,5 @@
-{[
-	{
+{
+	"races": [{
 		"name": "ERIDANI EMPIRE",
 		"color": "green",
 		"moves": 2,
@@ -31,7 +31,7 @@
 		"trade": 3,
 		"storage": [2, 5, 2],
 		"sector": 224
-	},
+	},{
 		"name": "MECHANEMA",
 		"color": "white",
 		"moves": 2,

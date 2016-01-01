@@ -27,8 +27,8 @@ public:
 	short int round;
 	
 	GameState();
-	GameState(const GameState& other);
-	static GameState fromJson(Json::Value initialState);
+	GameState(GameState& other);
+	static GameState* fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState);
 	bool isGameOver();
 	int getVP(PlayerBoard* p);
 	std::unordered_map<std::string, int> getScores();

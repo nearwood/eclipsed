@@ -1,5 +1,5 @@
-{[
-	{
+{
+	"sectors": [{
 		"ring": 0
 		"startingSquare": false,
 		"squares": [1, 1, 1],

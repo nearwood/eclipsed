@@ -1,16 +1,17 @@
 #include "PlayerBoard.h"
 
-PlayerBoard::PlayerBoard()
-:pass(false)
+PlayerBoard::PlayerBoard(Race& r)
+:race(r),
+pass(false)
 {
 
 }
 
-PlayerBoard::PlayerBoard(const PlayerBoard& other)
-:num(other.num),
+PlayerBoard::PlayerBoard(PlayerBoard& other)
+:race(other.race),
+num(other.num),
 pass(other.pass),
 colonies(other.colonies),
-color(other.color),
 e(other.e),
 m(other.m),
 s(other.s),
