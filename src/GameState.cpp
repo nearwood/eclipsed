@@ -25,6 +25,14 @@ round(other.round)
 	//children remains empty
 }
 
+GameState::~GameState()
+{
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+		delete *it;
+		
+	//TODO sectors
+}
+
 GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState)
 {
 	GameState* s = new GameState();
@@ -116,7 +124,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 //do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	if (round == 9) return true;
+	if (round == 2) return true;
 	
 	return false;
 }
@@ -285,13 +293,14 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 				
 				children.push_back(childState);
 			}
-			else
+			else //don't bother adding it to the list, it's an invalid state
 			{
 				delete childState;
 			}
 		}
 		else
 		{
+			delete childState;
 			//reactions
 			//build, upgrade, move
 		}

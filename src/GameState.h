@@ -26,6 +26,7 @@ public:
 	short int round;
 	
 	GameState();
+	~GameState();
 	GameState(GameState& other);
 	static GameState* fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState);
 	static std::list<GameState*> generateChildren(GameState& parent);
