@@ -280,23 +280,16 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			
 			//go to next round if there is one
 			childState->round++;
-			if (!childState->isGameOver())
+			for (PlayerBoard* l : childState->players)
 			{
-				for (PlayerBoard* l : childState->players)
-				{
-					l->pass = false;
-					//do whatever else resets here.
-					//COMBAT do all potential combat from all potential actions (using averages?) (starting from sectors numbers IIRC)
-					//UPKEEP e,m,s balancing
-					//CLEANUP //prob. redundant.
-				}
-				
-				children.push_back(childState);
+				l->pass = false;
+				//do whatever else resets here.
+				//COMBAT do all potential combat from all potential actions (using averages?) (starting from sectors numbers IIRC)
+				//UPKEEP e,m,s balancing
+				//CLEANUP //prob. redundant.
 			}
-			else //don't bother adding it to the list, it's an invalid state
-			{
-				delete childState;
-			}
+			
+			children.push_back(childState);
 		}
 		else
 		{
