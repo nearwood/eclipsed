@@ -1,6 +1,10 @@
 
 #include "GameState.h"
 
+#include <iostream>
+
+using namespace std;
+
 GameState::GameState()
 :round(0)
 {
@@ -30,7 +34,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	//load all races
 	//load game json, players, and assign playerboards with race
 	//delete unused races
-	std::list<Race*> racesList;
+	std::list<Race*> racesList; //might want a hashmap for easy deletion later
 	const Json::Value racesJson = races["races"];
 	for (uint i = 0; i < racesJson.size(); ++i)
 	{
@@ -82,13 +86,37 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		}
 	}
 	
+	//This seems horridly inefficient...
+	std::list<Race*> deleteList;
+	for (auto rit = racesList.cbegin(); rit != racesList.cend(); ++rit)
+	{
+		bool deleteMe = true;
+		for (auto pit = s->players.cbegin(); pit != s->players.cend(); ++pit)
+		{
+			if (&(*pit)->race == (*rit))
+			{
+				deleteMe = false;
+				break;
+			}
+		}
+		
+		if (deleteMe) deleteList.push_back(*rit);
+	}
+	
+	while (!deleteList.empty())
+	{
+		cout << "Freeing unused race: " << deleteList.front()->name << endl;
+		delete deleteList.front();
+		deleteList.pop_front();
+	}
+	
 	return s;
 }
 
 //do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	if (round == 10) return true;
+	if (round == 9) return true;
 	
 	return false;
 }
@@ -189,35 +217,31 @@ bool GameState::allPlayersPass()
 	return true;
 }
 
-std::list<GameState*> GameState::getChildren()
-{
-	if (children.size() == 0)
-		return children = generateChildren();
-	else
-		return children;
-}
-
 /**
  * Get a list of resulting board states that constitute all possibilities for a player.
  */
-std::list<GameState*> GameState::generateChildren()
+std::list<GameState*> GameState::generateChildren(GameState& parent)
 {
 	//build, upgrade, research, explore, move, influence, colonize, diplomacy, pass
 	//when everyone passes combat phase
 	//combat is random
-	GameState* childState = new GameState(*this);
 	
-	PlayerBoard *childBoard = childState->getCurrentPlayer();
-	if (childBoard && !childBoard->pass)
+	std::list<GameState*> children;
+	GameState* childState = new GameState(parent);
+	
+	PlayerBoard *currentBoard = childState->getCurrentPlayer();
+	//cout << "Playing as: " << currentBoard->name << endl;
+	//TODO assert currentBoard != nullptr
+	if (!currentBoard->pass)
 	{//try passing if we haven't already
-		
-		childBoard->pass = true;
+		//cout << "Pass" << endl;
+		currentBoard->pass = true;
 		
 		//check if first pass
 		bool firstPass = true;
 		for (PlayerBoard* l : childState->players)
 		{
-			if (l->pass && l != childBoard)
+			if (l->pass && l != currentBoard)
 			{
 				firstPass = false;
 				break;
@@ -229,37 +253,50 @@ std::list<GameState*> GameState::generateChildren()
 		if (firstPass)
 		{//If first pass set next round's first player.
 			childState->lastFirstPlayer = childState->firstPlayer;
-			childState->firstPlayer = childBoard->name;
-		}
-		else if (allPlayersPass())
-		{//If last pass, end the round
-			//childState->phase = GameState::Phase::Combat;
-			//TODO Do all phases here.
-			///All the below need to happen at once, combined into one state? (ie, 2 phases: Action or CombatUpkeepCleanup)
-			//COMBAT do all potential combat from all potential actions (using averages?)
-			//UPKEEP e,m,s balancing
-			//CLEANUP //prob. redundant.
-			childState->round++;
+			childState->firstPlayer = currentBoard->name;
 		}
 		
 		//going to have to force a pass at some point, preferably soon after e < 0 as you cannot action all your owned space away, and there are diminishing returns up to that point.
 		
-		PlayerBoard *nextPlayer = getNextPlayer();
+		PlayerBoard *nextPlayer = childState->getNextPlayer();
 		childState->currentPlayer = nextPlayer->name; //TODO Null check?
 		
 		children.push_back(childState);
 	}
 	else
-	{//reactions
-		//build, upgrade, move
+	{
+		if (childState->allPlayersPass())
+		{//If last pass, end the round
+			//cout << "All players pass" << endl;
+			//TODO Do all phases here.
+			
+			//go to next round if there is one
+			childState->round++;
+			if (!childState->isGameOver())
+			{
+				for (PlayerBoard* l : childState->players)
+				{
+					l->pass = false;
+					//do whatever else resets here.
+					//COMBAT do all potential combat from all potential actions (using averages?) (starting from sectors numbers IIRC)
+					//UPKEEP e,m,s balancing
+					//CLEANUP //prob. redundant.
+				}
+				
+				children.push_back(childState);
+			}
+			else
+			{
+				delete childState;
+			}
+		}
+		else
+		{
+			//reactions
+			//build, upgrade, move
+		}
 	}
 	
-	//for p1...pN
-	//action phase
-	//starting with p1
-	//allow action (or pass)
-	//go to next player
-	//repeat until all players pass, first passer is p1 next round
-	
+	//cout << "Generated " << children.size() << " children." << endl;
 	return children;
 }

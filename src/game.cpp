@@ -45,10 +45,11 @@ void Game::play()
 
 std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 {
-	cout << "Round: " << s->round << ", Depth: " << depth << endl;
-	
-	if (s->isGameOver() || depth == 10)
+	static int count = 0;
+	if (s->isGameOver())// || depth == 10)
 		return s->getScores();
+	
+	if (++count % 1000 == 0) cout << "Round: " << s->round << ", Depth: " << depth << ", Plays: " << ++count << endl;
 	
 	//while not at final state or max depth
 	
@@ -60,11 +61,11 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 	for (auto it = s->players.cbegin(); it != s->players.cend(); ++it)
 	{
 		PlayerBoard *p = (*it);
+		//cout << "Perspective: " << p->name << endl;
 		if (p == cp)
 		{
-			cout << "Perspective: " << p->name << endl;
 			int bestValue = -1000;
-			for (GameState* c : s->getChildren())
+			for (GameState* c : GameState::generateChildren(*s))
 			{
 				std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
 				auto it = subScores.find(p->name);
@@ -79,9 +80,8 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 		}
 		else
 		{
-			cout << "Opponent: " << p->name << endl;
 			int bestValue = 1000;
-			for (GameState* c : s->getChildren())
+			for (GameState* c : GameState::generateChildren(*s))
 			{
 				std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
 				auto it = subScores.find(p->name);

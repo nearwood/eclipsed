@@ -33,6 +33,7 @@ Looks like you aren't going to be able to simulate more than a few moves, space 
 2. Alpha–beta pruning -- going to need this as there are many really stupid moves in this game
 3. AI Players min/max, humanize to min/max +/- 10%, etc.
 4. Adjustable AI look-ahead
+5. Giant hashmap of gamestates to avoid dupes? (Dynamic programming)
 
 ## Notes
 * Mitigating Horizon Effect? What are important moves? System capture, player death, etc.?

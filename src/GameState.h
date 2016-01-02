@@ -13,8 +13,7 @@
 class GameState
 {
 private:
-	std::list<GameState*> children;
-	std::list<GameState*> generateChildren();
+	//std::list<GameState*> children;
 
 public:
 	std::list<PlayerBoard*> players;
@@ -29,6 +28,7 @@ public:
 	GameState();
 	GameState(GameState& other);
 	static GameState* fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState);
+	static std::list<GameState*> generateChildren(GameState& parent);
 	bool isGameOver();
 	int getVP(PlayerBoard* p);
 	std::unordered_map<std::string, int> getScores();
@@ -37,7 +37,7 @@ public:
 	PlayerBoard* getNextPlayer();
 	PlayerBoard* getLastFirstPlayer();
 	bool allPlayersPass();
-	std::list<GameState*> getChildren();
+	//std::list<GameState*> getChildren();
 	
 	//hashmap of player*->PlayerState?
 };
