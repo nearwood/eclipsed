@@ -14,13 +14,13 @@ void Game::play()
 {
 	cout << "Game start..." << endl;
 	std::unordered_map<std::string, int> scores = this->play(startState, 0);
+	cout << "Game end." << endl;
 	
 	for (auto it = scores.cbegin(); it != scores.cend(); ++it)
 		cout << it->first << ": " << it->second << endl;
-	
-	//cout << "Game end." << endl; //<< scores << endl;
 }
 
+//maxn
 std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 {
 	static int count = 0;
@@ -33,50 +33,29 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 	
 	PlayerBoard *cp = s->getCurrentPlayer();
 	std::unordered_map<std::string, int> scores;
-	int bestValue;
+	scores.insert({ cp->name, -1000 });
+	cout << "Player: " << cp->name << endl;
+	//int bestValue = -1000;
 	std::list<GameState*> children = GameState::generateChildren(*s);
 	
-	for (auto it = s->players.cbegin(); it != s->players.cend(); ++it)
+	for (GameState *c : children)
 	{
-		PlayerBoard *p = (*it);
-		//cout << "Perspective: " << p->name << endl;
-		cout << "p" << (int)p->num << "r" << s->round << "d" << depth << "p" << ++count << endl;
-		
-		if (p == cp)
+		std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
+		auto it = subScores.find(cp->name);
+		if (it != subScores.cend())
 		{
-			bestValue = -1000;
-			for (GameState* c : children)
+			int v = it->second;
+			auto it2 = scores.find(cp->name);
+			int bestValue = 0;
+			if (it2 != scores.cend() && v > it2->second) //>=?
 			{
-				std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
-				auto it = subScores.find(p->name);
-				int value = 0;
-				if (it != subScores.cend())
-					value = it->second;
-				
-				bestValue = max(value, bestValue);
+				bestValue = it2->second;
+				scores.at(cp->name) = bestValue;
+				//move = m
 			}
-			
-			scores.insert({ p->name, bestValue });
 		}
-		else
-		{
-			bestValue = 1000;
-			for (GameState* c : children)
-			{
-				std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
-				auto it = subScores.find(p->name);
-				int value = 0;
-				if (it != subScores.cend())
-					value = it->second;
-				
-				bestValue = min(value, bestValue);
-			}
-			
-			scores.insert({ p->name, bestValue });
-		}
+		//else if (v == it->second) //pick one out of equivalent moves
 	}
-	
-	//cout << ";" << endl;
 	
 	return scores;
 }
