@@ -33,30 +33,23 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 	
 	PlayerBoard *cp = s->getCurrentPlayer();
 	std::unordered_map<std::string, int> scores;
-	scores.insert({ cp->name, -1000 });
-	//cout << "Player: " << cp->name << endl;
-	//int bestValue = -1000;
+	int bestValue = -1000; //sturtevant uses maxn here to avoid else case for scores->find()
 	std::list<GameState*> children = GameState::generateChildren(*s);
 	
 	for (GameState *c : children)
 	{
-		std::unordered_map<std::string, int> subScores = this->play(c, depth + 1);
-		auto it = subScores.find(cp->name);
-		if (it != subScores.cend())
+		scores = this->play(c, depth + 1);
+		auto it = scores.find(cp->name);
+		if (it != scores.cend())
 		{
 			int currentValue = it->second;
-			auto it2 = scores.find(cp->name);
-			if (it2 != scores.cend())
+			if (currentValue > bestValue) //>=?
 			{
-				int bestValue = it2->second;
-				if (currentValue > bestValue) //>=?
-				{
-					scores.at(cp->name) = currentValue;
-					//move = m
-				}
+				scores.at(cp->name) = currentValue;
+				//move = m
 			}
+				//else if (v == it->second) //pick one out of equivalent moves
 		}
-		//else if (v == it->second) //pick one out of equivalent moves
 	}
 	
 	return scores;

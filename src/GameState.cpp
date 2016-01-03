@@ -124,7 +124,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 //do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	if (round == 10) return true;
+	if (round == 3) return true;
 	
 	return false;
 }
