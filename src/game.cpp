@@ -34,7 +34,7 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 	PlayerBoard *cp = s->getCurrentPlayer();
 	std::unordered_map<std::string, int> scores;
 	scores.insert({ cp->name, -1000 });
-	cout << "Player: " << cp->name << endl;
+	//cout << "Player: " << cp->name << endl;
 	//int bestValue = -1000;
 	std::list<GameState*> children = GameState::generateChildren(*s);
 	

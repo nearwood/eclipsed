@@ -124,7 +124,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 //do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	if (round == 2) return true;
+	if (round == 10) return true;
 	
 	return false;
 }
@@ -238,11 +238,11 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	GameState* childState = new GameState(parent);
 	
 	PlayerBoard *currentBoard = childState->getCurrentPlayer();
-	//cout << "Playing as: " << currentBoard->name << endl;
+	cout << "Playing as: " << currentBoard->name << endl;
 	//TODO assert currentBoard != nullptr
 	if (!currentBoard->pass)
 	{//try passing if we haven't already
-		//cout << "Pass" << endl;
+		cout << "Pass" << endl;
 		currentBoard->pass = true;
 		
 		//check if first pass
@@ -275,7 +275,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	{
 		if (childState->allPlayersPass())
 		{//If last pass, end the round
-			//cout << "All players pass" << endl;
+			cout << "All players pass" << endl;
 			//TODO Do all phases here.
 			
 			//go to next round if there is one
@@ -299,6 +299,6 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		}
 	}
 	
-	//cout << "Generated " << children.size() << " children." << endl;
+	cout << "Generated " << children.size() << " children." << endl;
 	return children;
 }
