@@ -44,14 +44,16 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 		auto it = subScores.find(cp->name);
 		if (it != subScores.cend())
 		{
-			int v = it->second;
+			int currentValue = it->second;
 			auto it2 = scores.find(cp->name);
-			int bestValue = 0;
-			if (it2 != scores.cend() && v > it2->second) //>=?
+			if (it2 != scores.cend())
 			{
-				bestValue = it2->second;
-				scores.at(cp->name) = bestValue;
-				//move = m
+				int bestValue = it2->second;
+				if (currentValue > bestValue) //>=?
+				{
+					scores.at(cp->name) = currentValue;
+					//move = m
+				}
 			}
 		}
 		//else if (v == it->second) //pick one out of equivalent moves
