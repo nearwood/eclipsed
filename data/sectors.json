@@ -1,399 +1,399 @@
 {
 	"sectors": [{
-		"ring": 0
-		"startingSquare": false,
+		"ring": 0,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
-		"id": 001
+		"id": 1
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 101
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 102
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 103
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 104
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 105
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 106
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 107
 	},{
-		"ring": 1
-		"startingSquare": false,
+		"ring": 1,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 108
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 201
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 202
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 203
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 204
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 205
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 206
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 207
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 208
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 209
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 210
 	},{
-		"ring": 2
-		"startingSquare": false,
+		"ring": 2,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 211
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 221
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 222
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 223
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 224
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 225
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 226
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 227
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 228
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 229
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 230
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 231
 	},{
-		"ring": 2
-		"startingSquare": true,
+		"ring": 2,
+		"startSector": true,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 232
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 301
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 302
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 303
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 304
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 305
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 306
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 307
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 308
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 309
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 310
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 311
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 312
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 313
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 314
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 315
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 316
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,
 		"special": [],
 		"id": 317
 	},{
-		"ring": 3
-		"startingSquare": false,
+		"ring": 3,
+		"startSector": false,
 		"squares": [1, 1, 1],
 		"advancedSquares": [0, 1, 0],
 		"ancient": false,

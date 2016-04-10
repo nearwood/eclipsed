@@ -16,7 +16,7 @@ typedef InfluenceDisc Disc;
 /**
  * Might want to keep references to original name, color, to try and keep mem down? Not that big of a deal?
  */
-class PlayerBoard
+class PlayerBoard //: Race?
 {
 public:
 	Race& race;

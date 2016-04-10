@@ -9,11 +9,11 @@ class Sector;
 class SectorLink
 {
 public:
-	enum LinkType { NONE, HALF, FULL }; //Perhaps we should denote direction for halves
-	LinkType linkType;
+	//enum LinkType { NONE, HALF, FULL }; //
+	//LinkType linkType; //Not needed
 
-	Sector *sector;
-	SectorLink *linkedSector; //other side
+	Sector *from, *to;
+	//SectorLink *linkedSector; //other side
 
 	SectorLink();
 };

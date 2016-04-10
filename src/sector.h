@@ -3,7 +3,7 @@
 class SectorLink;
 
 #include "ship.h"
-#include "planet.h"
+//#include "planet.h"
 #include "sectorlink.h"
 #include "InfluenceDisc.h"
 
@@ -12,10 +12,14 @@ class SectorLink;
 class Sector
 {
 public:
-	std::list<Planet> planets;
+	//std::list<Planet> planets;
 	bool ancientSpawn;
 	bool ancientBonus; //?
+	bool startSector;
 	short int id;
+	short int ring;
+	short int eco, min, sci;
+	short int aeco, amin, asci;
 
 	Disc* influence;
 	std::list<Ship*> ships;
@@ -23,5 +27,6 @@ public:
 	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;
 	Sector *n, *ne, *se, *s, *sw, *nw;
 
-    Sector();
+	Sector();
+	Sector(Sector& other);
 };

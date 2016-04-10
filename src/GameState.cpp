@@ -20,8 +20,11 @@ round(other.round)
 	for (auto it = other.players.cbegin(); it != other.players.cend(); ++it)
 		players.push_back(new PlayerBoard(**it));
 	
-	//sectors = other.sectors;
+	for (auto it = other.sectors.begin(); it != other.sectors.cend(); ++it)
+		sectors.push_back(new Sector(**it));
+	
 	tech = other.tech;
+	
 	//children remains empty
 }
 
@@ -35,9 +38,9 @@ GameState::~GameState()
 
 GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState)
 {
-	GameState* s = new GameState();
+	GameState* gs = new GameState();
 	
-	s->round = 1;
+	gs->round = 1;
 	
 	//load all races
 	//load game json, players, and assign playerboards with race
@@ -57,6 +60,33 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		r->name = jr.get("name", "UNKNOWN").asString();
 		racesList.push_back(r);
 	}
+	
+	const Json::Value sectorsJson = sectors["sectors"];
+	for (uint i = 0; i < sectorsJson.size(); ++i)
+	{
+		Json::Value js = sectorsJson[i];
+		Sector *s = new Sector();
+		s->ring = js["ring"].asInt();
+		s->id = js["id"].asInt();
+		s->ancientSpawn = js["ancient"].asBool();
+		s->startSector = js["startSector"].asBool();
+		
+		Json::Value squares = js["squares"];
+		//assert storage.size() == 3
+		s->eco = squares[0].asInt();
+		s->min = squares[1].asInt();
+		s->sci = squares[2].asInt();
+		
+		Json::Value advSquares = js["advancedSquares"];
+		//assert storage.size() == 3
+		s->aeco = advSquares[0].asInt();
+		s->amin = advSquares[1].asInt();
+		s->asci = advSquares[2].asInt();
+		
+		//s->name = js.get("name", "UNKNOWN").asString();
+		gs->sectors.push_back(s);
+	}
+	cout << "Loaded " << gs->sectors.size() << " sectors." << endl;
 	
 	const Json::Value players = initialState["players"];
 	for (uint i = 0; i < players.size(); ++i)
@@ -83,23 +113,25 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		PlayerBoard *pb = new PlayerBoard(*race);
 		pb->name = race->name;
 		pb->num = po.get("player", i + 1).asInt();
-		s->players.push_back(pb);
+		gs->players.push_back(pb);
 		
 		int playerNum = po.get("player", 0).asInt();
 		if (playerNum == 1 || i == 0)
 		{
-			s->firstPlayer = pb->name;
-			s->lastFirstPlayer = pb->name;
-			s->currentPlayer = pb->name;
+			gs->firstPlayer = pb->name;
+			gs->lastFirstPlayer = pb->name;
+			gs->currentPlayer = pb->name;
 		}
 	}
+	
+	//TODO Setup map //random or predefined?
 	
 	//This seems horridly inefficient...
 	std::list<Race*> deleteList;
 	for (auto rit = racesList.cbegin(); rit != racesList.cend(); ++rit)
 	{
 		bool deleteMe = true;
-		for (auto pit = s->players.cbegin(); pit != s->players.cend(); ++pit)
+		for (auto pit = gs->players.cbegin(); pit != gs->players.cend(); ++pit)
 		{
 			if (&(*pit)->race == (*rit))
 			{
@@ -118,7 +150,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		deleteList.pop_front();
 	}
 	
-	return s;
+	return gs;
 }
 
 //do some trivial stuff quickly to determine who won
@@ -238,10 +270,13 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	GameState* childState = new GameState(parent);
 	
 	PlayerBoard *currentBoard = childState->getCurrentPlayer();
-	cout << "Playing as: " << currentBoard->name << endl;
 	//TODO assert currentBoard != nullptr
 	if (!currentBoard->pass)
-	{//try passing if we haven't already
+	{
+		cout << "Playing as: " << currentBoard->name << endl;
+		
+		//try passing if we haven't already
+		//bool firstPass = currentBoard->pass();
 		cout << "Pass" << endl;
 		currentBoard->pass = true;
 		
@@ -275,18 +310,27 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	{
 		if (childState->allPlayersPass())
 		{//If last pass, end the round
-			cout << "All players pass" << endl;
+			cout << "All players pass." << endl;
 			//TODO Do all phases here.
 			
+			cout << "COMBAT PHASE" << endl;
+			//COMBAT do all potential combat from all potential actions (using averages?) (starting from sectors numbers IIRC)
+			
+			cout << "UPKEEP PHASE" << endl;
+			//UPKEEP e,m,s balancing
+			for (PlayerBoard* l : childState->players)
+			{
+				//TODO Need sectors to do upkeep
+			}
+			
+			cout << "CLEANUP PHASE" << endl;
 			//go to next round if there is one
 			childState->round++;
 			for (PlayerBoard* l : childState->players)
 			{
 				l->pass = false;
 				//do whatever else resets here.
-				//COMBAT do all potential combat from all potential actions (using averages?) (starting from sectors numbers IIRC)
-				//UPKEEP e,m,s balancing
-				//CLEANUP //prob. redundant.
+				//reset settler ships
 			}
 			
 			children.push_back(childState);

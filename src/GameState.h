@@ -18,7 +18,10 @@ private:
 public:
 	std::list<PlayerBoard*> players;
 	std::string currentPlayer, firstPlayer, lastFirstPlayer; //dumb but works for now
-	std::list<Sector*> sectors; //some kind of map representation... but not a tree since the core and each player start separate?
+	
+	std::list<Sector*> sectors; //list of all sectors for pulling a random one/copying
+	//Sector* gc; //all roads lead to rome
+	
 	//also, should just keep one large, static list of all sectors and then some state of which ones are placed
 	std::list<Tech*> tech; //shown for purchase and remaining?
 	//same as sector, one static list of all tech, then each state has status of available ones

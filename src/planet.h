@@ -5,6 +5,8 @@
 
 #include "resource.h"
 
+//TODO Don't think this is needed--except maybe when trying to wipe out other players...
+// but even then we can just gather aeco + eco, for example.
 class Planet
 {
 public:

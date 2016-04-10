@@ -20,22 +20,18 @@ INCLUDE_DIRECTORIES(${JSONCPP_INCLUDE_DIRS})
 
 #SET(INCLUDES src/.h)
 SET(SOURCES src/main.cpp
-			src/Action.cpp
-			src/GameState.cpp
-			src/galacticcenter.cpp
-			src/planet.cpp
-			src/ring1.cpp
-			src/sector.cpp
-			src/ship.cpp
+			#src/Action.cpp
 			src/game.cpp
-			src/PlayerBoard.cpp
-			src/ring2.cpp
-			src/sectorlink.cpp
-			src/startingsector.cpp
+			src/GameState.cpp
+			src/map.cpp
 			#src/mainwindow.cpp
+			#src/planet.cpp
+			src/PlayerBoard.cpp
 			src/race.cpp
 			src/resource.cpp
-			src/ring3.cpp
+			src/sector.cpp
+			src/sectorlink.cpp
+			src/ship.cpp
 			src/shipblueprint.cpp
 			src/tech.cpp)
 
