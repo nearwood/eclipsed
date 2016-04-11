@@ -1,6 +1,20 @@
 #include "sector.h"
 
-Sector::Sector()
+Sector::Sector():
+id(-1),
+ring(-1),
+ln(nullptr),
+lne(nullptr),
+lse(nullptr),
+ls(nullptr),
+lsw(nullptr),
+lnw(nullptr),
+n(nullptr),
+ne(nullptr),
+se(nullptr),
+s(nullptr),
+sw(nullptr),
+nw(nullptr)
 {
 	
 }

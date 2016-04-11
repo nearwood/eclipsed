@@ -5,6 +5,7 @@
 
 #include "json/json.h"
 
+#include "map.h"
 #include "sector.h"
 #include "ship.h"
 #include "tech.h"
@@ -19,8 +20,9 @@ public:
 	std::list<PlayerBoard*> players;
 	std::string currentPlayer, firstPlayer, lastFirstPlayer; //dumb but works for now
 	
-	std::list<Sector*> sectors; //list of all sectors for pulling a random one/copying
+	//std::list<Sector*> sectors; //list of all sectors for pulling a random one/copying
 	//Sector* gc; //all roads lead to rome
+	Map *map;
 	
 	//also, should just keep one large, static list of all sectors and then some state of which ones are placed
 	std::list<Tech*> tech; //shown for purchase and remaining?

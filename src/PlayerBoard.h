@@ -5,7 +5,7 @@ class PlayerBoard;
 #include "ship.h"
 #include "race.h"
 
-#include <list>
+#include <vector>
 #include <string>
 
 typedef unsigned char sint;
@@ -18,6 +18,8 @@ typedef InfluenceDisc Disc;
  */
 class PlayerBoard //: Race?
 {
+	std::vector<Disc*> inf;
+	
 public:
 	Race& race;
 	
@@ -27,12 +29,15 @@ public:
 	
 	sint e, m, s; //economy, minerals, science
 	sint moves, builds, upgrades; //num builds, upgrades, moves used out of total
-	std::list<Disc*> infAvailable, infSpent;
 	
 	std::string name; //TODO just keep ref to original?
 	
-	std::list<Ship*> deployedShips, unbuiltShips;
+	std::vector<Ship*> deployedShips, unbuiltShips;
 	
 	PlayerBoard(Race& r);
 	PlayerBoard(PlayerBoard& other);
+	
+	Disc* getFreeInfluence();
+	void placeInfluence(Sector* s);
+	
 };

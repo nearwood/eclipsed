@@ -8,20 +8,18 @@ using namespace std;
 GameState::GameState()
 :round(0)
 {
-	
+	map = new Map();
 }
 
 GameState::GameState(GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
+map(other.map),
 round(other.round)
 {
 	for (auto it = other.players.cbegin(); it != other.players.cend(); ++it)
 		players.push_back(new PlayerBoard(**it));
-	
-	for (auto it = other.sectors.begin(); it != other.sectors.cend(); ++it)
-		sectors.push_back(new Sector(**it));
 	
 	tech = other.tech;
 	
@@ -61,6 +59,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		racesList.push_back(r);
 	}
 	
+	std::list<Sector*> sectorList;
 	const Json::Value sectorsJson = sectors["sectors"];
 	for (uint i = 0; i < sectorsJson.size(); ++i)
 	{
@@ -84,9 +83,10 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		s->asci = advSquares[2].asInt();
 		
 		//s->name = js.get("name", "UNKNOWN").asString();
-		gs->sectors.push_back(s);
+		sectorList.push_back(s);
 	}
-	cout << "Loaded " << gs->sectors.size() << " sectors." << endl;
+	gs->map->setSectors(sectorList);
+	cout << "Loaded " << gs->map->size() << " sectors." << endl;
 	
 	const Json::Value players = initialState["players"];
 	for (uint i = 0; i < players.size(); ++i)
@@ -106,7 +106,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		
 		if (!race)
 		{
-			//cerr << "Could not find race: " << name << endl;
+			//cerr << "404 race not found: " << name << endl;
 			continue;
 		}
 		
@@ -115,6 +115,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		pb->num = po.get("player", i + 1).asInt();
 		gs->players.push_back(pb);
 		
+		//setup first player
 		int playerNum = po.get("player", 0).asInt();
 		if (playerNum == 1 || i == 0)
 		{
@@ -122,9 +123,17 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 			gs->lastFirstPlayer = pb->name;
 			gs->currentPlayer = pb->name;
 		}
+		
+		//setup starting sector
+		int startSector = po.get("startSector", 9000).asInt();
+		Sector* sector = gs->map->getSectorById(startSector);
+		pb->placeInfluence(sector);
+		
+		gs->map->placeSector(sector);
 	}
 	
-	//TODO Setup map //random or predefined?
+	//Sector* sector = gs->map->getSectorById(1); //Galactic center
+	
 	
 	//This seems horridly inefficient...
 	std::list<Race*> deleteList;

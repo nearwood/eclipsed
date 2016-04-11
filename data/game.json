@@ -3,12 +3,12 @@
 	"players": [
 		{
 			"player": 1,
-			"startingSquare": 221,
+			"startSector": 221,
 			"name": "MECHANEMA"
 		},
 		{
 			"player": 2,
-			"startingSquare": 222,
+			"startSector": 222,
 			"name": "HYDRAN PROGRESS"
 		}
 	]
