@@ -1,12 +1,19 @@
 #include "map.h"
 
+Sector* Map::NullSector = new Sector();
+
 Map::Map()
 {//eh, is this only for the null sector?
 	//sectors = std::list<Sector*>();
 	
 	//Fill graph
 	
-	
+	gc->n = Map::NullSector;
+	gc->ne = Map::NullSector;
+	gc->se = Map::NullSector;
+	gc->s = Map::NullSector;
+	gc->sw = Map::NullSector;
+	gc->nw = Map::NullSector;
 }
 
 Map::Map(Map& other)

@@ -24,8 +24,8 @@ public:
 	Disc* influence;
 	std::list<Ship*> ships;
 
-	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw;
-	Sector *n, *ne, *se, *s, *sw, *nw;
+	SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw; //actual physical rep.
+	Sector *n, *ne, *se, *s, *sw, *nw; //internal usage, direct to valid sectors only?
 
 	Sector();
 	Sector(Sector& other);

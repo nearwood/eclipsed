@@ -86,7 +86,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		sectorList.push_back(s);
 	}
 	gs->map->setSectors(sectorList);
-	cout << "Loaded " << gs->map->size() << " sectors." << endl;
+	cout << "Loaded " << sectorList.size() << " sectors." << endl;
 	
 	const Json::Value players = initialState["players"];
 	for (uint i = 0; i < players.size(); ++i)

@@ -10,11 +10,11 @@ class Map
 	std::list<Sector*> sectors; //ref?
 	Sector* gc;
 	
-	static const Sector* NullSector;
-	
 public:
 	Map();
 	Map(Map& other);
+
+	static Sector* NullSector;
 
 	void setSectors(std::list<Sector*> s);
 	short int size();
@@ -31,7 +31,7 @@ public:
 	Sector* getRandomRing2Sector();
 	Sector* getRandomRing3Sector();
 	
+	//Sector* createEmptySector();
 	void placeSector(Sector* s);
 };
 
-static const Sector* NullSector = new Sector();
