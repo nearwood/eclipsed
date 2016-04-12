@@ -31,7 +31,8 @@ public:
 	Sector* getRandomRing2Sector();
 	Sector* getRandomRing3Sector();
 	
-	//Sector* createEmptySector();
 	void placeSector(Sector* s);
+	
+	static Sector* createEmptySector();
+	static void adjacentSectors(Sector* a, Sector* b, Sector::Side s);
 };
-

@@ -1,8 +1,16 @@
 #include "sector.h"
 
 Sector::Sector():
+isEmpty(false),
 id(-1),
 ring(-1),
+eco(-1),
+min(-1),
+sci(-1),
+aeco(-1),
+amin(-1),
+asci(-1),
+influence(nullptr),
 ln(nullptr),
 lne(nullptr),
 lse(nullptr),
@@ -48,4 +56,12 @@ sw(other.sw),
 nw(other.nw)
 {
 	
+}
+
+Sector* Sector::createEmptySector(short int ring)
+{
+	Sector* s = new Sector();
+	s->isEmpty = true;
+	s->ring = ring;
+	return s;
 }

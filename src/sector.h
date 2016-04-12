@@ -11,7 +11,11 @@ class SectorLink;
 
 class Sector
 {
+	bool isEmpty;
+	
 public:
+	enum Side { N, NE, SE, S, SW, NW };
+	
 	//std::list<Planet> planets;
 	bool ancientSpawn;
 	bool ancientBonus; //?
@@ -29,4 +33,6 @@ public:
 
 	Sector();
 	Sector(Sector& other);
+	
+	static Sector* createEmptySector(short int ring = 0);
 };
