@@ -33,7 +33,7 @@ public:
 	//movement along edges only, no vertices needed
 	//SectorLink *ln, *lne, *lse, *ls, *lsw, *lnw; //actual physical rep.
 	//Sector *n, *ne, *se, *s, *sw, *nw; //internal usage, direct to valid sectors only?
-	Sector* nbr[6]; //neighbor
+	//Sector* nbr[6]; //neighbor
 	Sector* link[6];
 
 	Sector();

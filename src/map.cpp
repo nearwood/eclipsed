@@ -26,7 +26,7 @@ Map::Map()
 	 */
 	for (int i = 0; i < 6; ++i)
 	{
-		gc->nbr[i] = Sector::createEmptySector(1);
+		//gc->nbr[i] = Sector::createEmptySector(1);
 	}
 	
 	/* Ring 2 - 2(6) sectors

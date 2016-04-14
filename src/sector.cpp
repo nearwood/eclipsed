@@ -17,7 +17,7 @@ influence(nullptr)
 {
 	for (int i = 0; i < 6; ++i)
 	{
-		nbr[i] = link[i] = nullptr;
+		//nbr[i] = link[i] = nullptr;
 	}
 }
 
@@ -40,7 +40,7 @@ ships(other.ships)
 {
 	for (int i = 0; i < 6; ++i)
 	{
-		nbr[i] = other.nbr[i];
+		//nbr[i] = other.nbr[i];
 		link[i] = other.link[i];
 	}
 }
