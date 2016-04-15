@@ -43,7 +43,7 @@ public:
 	Sector* link[6];
 
 	Sector(short int q, short int r, short int s);
-	Sector(Sector& other);
+	Sector(Sector* other);
 	
 	//static Sector* createEmptySector(short int ring = 0);
 	short int getDistance(Sector* from = nullptr);

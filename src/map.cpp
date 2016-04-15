@@ -12,11 +12,11 @@ Map::Map()
 	 * / x\
 	 * \__/
 	 */
-	gc = new Sector(0, 0, 0); //galactic core is never empty
-	gc->id = 1;
+	//gc = new Sector(0, 0, 0); //galactic core is never empty
+	//gc->id = 1;
 	//TODO setup GC cubes and defenses
 	//sectors.insert(gc->id, gc);
-	sectors.push_back(gc);
+	//sectors.push_back(gc);
 	
 	/* Ring 1
 	 *     __
@@ -33,12 +33,12 @@ Map::Map()
 	//sectors.insert(-100, new Sector(-1, 0, 0));
 	//sectors.insert(-010, new Sector(0, -1, 0));
 	//sectors.insert(-001, new Sector(0, 0, -1));
-	sectors.push_back(new Sector(1, 0, 0));
-	sectors.push_back(new Sector(0, 1, 0));
-	sectors.push_back(new Sector(0, 0, 1));
-	sectors.push_back(new Sector(-1, 0, 0));
-	sectors.push_back(new Sector(0, -1, 0));
-	sectors.push_back(new Sector(0, 0, -1));
+	//sectors.push_back(new Sector(1, 0, 0));
+	//sectors.push_back(new Sector(0, 1, 0));
+	//sectors.push_back(new Sector(0, 0, 1));
+	//sectors.push_back(new Sector(-1, 0, 0));
+	//sectors.push_back(new Sector(0, -1, 0));
+	//sectors.push_back(new Sector(0, 0, -1));
 	
 	/* Ring 2 - 2(6) sectors
 	 *        __
@@ -53,18 +53,18 @@ Map::Map()
 	 *    \__/ x\__/
 	 *       \__/
 	 */
-	sectors.push_back(new Sector(2, 0, 0));
-	sectors.push_back(new Sector(0, 2, 0));
-	sectors.push_back(new Sector(0, 0, 2));
-	sectors.push_back(new Sector(1, 1, 0));
-	sectors.push_back(new Sector(1, 0, 1));
-	sectors.push_back(new Sector(0, 1, 1));
-	sectors.push_back(new Sector(-2, 0, 0));
-	sectors.push_back(new Sector(0, -2, 0));
-	sectors.push_back(new Sector(0, 0, -2));
-	sectors.push_back(new Sector(-1, -1, 0));
-	sectors.push_back(new Sector(0, -1, -1));
-	sectors.push_back(new Sector(-1, 0, -1));
+	//sectors.push_back(new Sector(2, 0, 0));
+	//sectors.push_back(new Sector(0, 2, 0));
+	//sectors.push_back(new Sector(0, 0, 2));
+	//sectors.push_back(new Sector(1, 1, 0));
+	//sectors.push_back(new Sector(1, 0, 1));
+	//sectors.push_back(new Sector(0, 1, 1));
+	//sectors.push_back(new Sector(-2, 0, 0));
+	//sectors.push_back(new Sector(0, -2, 0));
+	//sectors.push_back(new Sector(0, 0, -2));
+	//sectors.push_back(new Sector(-1, -1, 0));
+	//sectors.push_back(new Sector(0, -1, -1));
+	//sectors.push_back(new Sector(-1, 0, -1));
 	
 	//TODO Worth it to have sectors figure this out on their own?
 	
@@ -85,24 +85,28 @@ Map::Map()
 	 *       \__/ x\__/
 	 *          \__/
 	 */
-	sectors.push_back(new Sector(3, 0, 0));
-	sectors.push_back(new Sector(-3, 0, 0));
-	sectors.push_back(new Sector(0, 3, 0));
-	sectors.push_back(new Sector(0, -3, 0));
-	sectors.push_back(new Sector(0, 0, 3));
-	sectors.push_back(new Sector(0, 0, -3));
-	sectors.push_back(new Sector(2, 1, 0));
-	sectors.push_back(new Sector(-2, -1, 0));
-	sectors.push_back(new Sector(2, 0, 1));
-	sectors.push_back(new Sector(-2, 0, -1));
-	sectors.push_back(new Sector(0, 2, 1));
-	sectors.push_back(new Sector(0, -2, -1));
-	sectors.push_back(new Sector(1, 2, 0));
-	sectors.push_back(new Sector(-1, -2, 0));
-	sectors.push_back(new Sector(1, 0, 2));
-	sectors.push_back(new Sector(-1, 0, -2));
-	sectors.push_back(new Sector(0, 1, 2));
-	sectors.push_back(new Sector(0, -1, -2));
+	//sectors.push_back(new Sector(3, 0, 0));
+	//sectors.push_back(new Sector(-3, 0, 0));
+	//sectors.push_back(new Sector(0, 3, 0));
+	//sectors.push_back(new Sector(0, -3, 0));
+	//sectors.push_back(new Sector(0, 0, 3));
+	//sectors.push_back(new Sector(0, 0, -3));
+	//sectors.push_back(new Sector(2, 1, 0));
+	//sectors.push_back(new Sector(-2, -1, 0));
+	//sectors.push_back(new Sector(2, 0, 1));
+	//sectors.push_back(new Sector(-2, 0, -1));
+	//sectors.push_back(new Sector(0, 2, 1));
+	//sectors.push_back(new Sector(0, -2, -1));
+	//sectors.push_back(new Sector(1, 2, 0));
+	//sectors.push_back(new Sector(-1, -2, 0));
+	//sectors.push_back(new Sector(1, 0, 2));
+	//sectors.push_back(new Sector(-1, 0, -2));
+	//sectors.push_back(new Sector(0, 1, 2));
+	//sectors.push_back(new Sector(0, -1, -2));
+
+	//For ring 3, since we can add sectors at d >= 3, the idea is that we just handle them on a case-by-case basis.
+
+	
 }
 
 Map::Map(Map& other)
@@ -112,7 +116,7 @@ Map::Map(Map& other)
 	//	sectors.push_back(new Sector(**it));
 	//sectors = other.sectors;
 	
-	gc = other.gc;
+	gc = new Sector(other.gc);
 	
 	//Fill out graph
 }
