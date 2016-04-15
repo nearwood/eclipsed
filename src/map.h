@@ -4,19 +4,24 @@
 #include "sectorlink.h"
 
 #include <list>
+//#include <unordered_map>
+
+//typedef std::unordered_map<int, Sector*> sectormap;
 
 class Map
 {
-	std::list<Sector*> sectors; //ref?
+	//sectormap sectors; //ref?
+	std::list<Sector*> sectors;
 	Sector* gc;
 	
 public:
 	Map();
 	Map(Map& other);
 
-	static Sector* NullSector;
+	//static Sector* NullSector;
 
 	void setSectors(std::list<Sector*> s);
+	//void setSectors(sectormap s);
 	short int size();
 
 	std::list<Sector*> getAllSectors(); //TODO should be ref

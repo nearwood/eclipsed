@@ -64,7 +64,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	for (uint i = 0; i < sectorsJson.size(); ++i)
 	{
 		Json::Value js = sectorsJson[i];
-		Sector *s = new Sector();
+		Sector *s = new Sector(-1, -1, -1);
 		s->ring = js["ring"].asInt();
 		s->id = js["id"].asInt();
 		s->ancientSpawn = js["ancient"].asBool();
@@ -127,9 +127,9 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		//setup starting sector
 		int startSector = po.get("startSector", 9000).asInt();
 		Sector* sector = gs->map->getSectorById(startSector);
-		pb->placeInfluence(sector);
-		
+		sector->startSector = true;
 		gs->map->placeSector(sector);
+		pb->placeInfluence(sector);
 	}
 	
 	//Sector* sector = gs->map->getSectorById(1); //Galactic center

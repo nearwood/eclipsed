@@ -2,8 +2,7 @@
 
 #include <cmath>
 
-Sector::Sector():
-isEmpty(false),
+Sector::Sector(short int q, short int r, short int s):
 d(-1),
 ring(-1),
 id(-1),
@@ -15,10 +14,9 @@ amin(-1),
 asci(-1),
 influence(nullptr)
 {
-	for (int i = 0; i < 6; ++i)
-	{
-		//nbr[i] = link[i] = nullptr;
-	}
+	this->q = q;
+	this->r = r;
+	this->s = s;
 }
 
 Sector::Sector(Sector& other):
@@ -29,6 +27,9 @@ ancientBonus(other.ancientBonus),
 startSector(other.startSector),
 ring(-1),
 id(other.id),
+q(other.q),
+r(other.r),
+s(other.s),
 eco(other.eco),
 min(other.min),
 sci(other.sci),
@@ -48,15 +49,4 @@ ships(other.ships)
 short int Sector::getDistance(Sector* from) //TODO imp arg
 {
 	return d >= 0 ? d : d = std::max(std::max(abs(q), abs(r)), abs(s));
-}
-
-Sector* Sector::createEmptySector(short int ring)
-{
-	Sector* s = new Sector();
-	s->isEmpty = true;
-	s->ring = ring;
-	
-	//TODO visit all non-null neighbors in ring and link
-	
-	return s;
 }

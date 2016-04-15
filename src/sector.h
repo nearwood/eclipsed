@@ -9,9 +9,15 @@ class SectorLink;
 
 #include <list>
 
+class spos
+{
+	short int q, r, s;
+	
+	//TODO operator=, distance etc.
+};
+
 class Sector
 {
-	bool isEmpty;
 	short int d;
 	
 public:
@@ -36,9 +42,9 @@ public:
 	//Sector* nbr[6]; //neighbor
 	Sector* link[6];
 
-	Sector();
+	Sector(short int q, short int r, short int s);
 	Sector(Sector& other);
 	
-	static Sector* createEmptySector(short int ring = 0);
+	//static Sector* createEmptySector(short int ring = 0);
 	short int getDistance(Sector* from = nullptr);
 };

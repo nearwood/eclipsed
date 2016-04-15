@@ -1,6 +1,6 @@
 #include "map.h"
 
-Sector* Map::NullSector = new Sector();
+//Sector* Map::NullSector = new Sector();
 
 Map::Map()
 {//eh, is this only for the null sector?
@@ -12,22 +12,33 @@ Map::Map()
 	 * / x\
 	 * \__/
 	 */
-	gc = new Sector(); //galactic core is never empty
+	gc = new Sector(0, 0, 0); //galactic core is never empty
+	gc->id = 1;
 	//TODO setup GC cubes and defenses
+	//sectors.insert(gc->id, gc);
+	sectors.push_back(gc);
 	
 	/* Ring 1
 	 *     __
-	 *  __/ x\__
-	 * / x\__/ x\
+	 *  __/ q\__
+	 * / r\__/ s\
 	 * \__/  \__/
-	 * / x\__/ x\
-	 * \__/ x\__/
+	 * /-s\__/-r\
+	 * \__/-q\__/
 	 *    \__/
 	 */
-	for (int i = 0; i < 6; ++i)
-	{
-		//gc->nbr[i] = Sector::createEmptySector(1);
-	}
+	//sectors.insert(100, new Sector(1, 0, 0));
+	//sectors.insert(010, new Sector(0, 1, 0));
+	//sectors.insert(001, new Sector(0, 0, 1));
+	//sectors.insert(-100, new Sector(-1, 0, 0));
+	//sectors.insert(-010, new Sector(0, -1, 0));
+	//sectors.insert(-001, new Sector(0, 0, -1));
+	sectors.push_back(new Sector(1, 0, 0));
+	sectors.push_back(new Sector(0, 1, 0));
+	sectors.push_back(new Sector(0, 0, 1));
+	sectors.push_back(new Sector(-1, 0, 0));
+	sectors.push_back(new Sector(0, -1, 0));
+	sectors.push_back(new Sector(0, 0, -1));
 	
 	/* Ring 2 - 2(6) sectors
 	 *        __
@@ -42,10 +53,18 @@ Map::Map()
 	 *    \__/ x\__/
 	 *       \__/
 	 */
-	for (int i = 0; i < 6; ++i)
-	{
-		//gc->nbr[0]-> = Sector::createEmptySector(2);
-	}
+	sectors.push_back(new Sector(2, 0, 0));
+	sectors.push_back(new Sector(0, 2, 0));
+	sectors.push_back(new Sector(0, 0, 2));
+	sectors.push_back(new Sector(1, 1, 0));
+	sectors.push_back(new Sector(1, 0, 1));
+	sectors.push_back(new Sector(0, 1, 1));
+	sectors.push_back(new Sector(-2, 0, 0));
+	sectors.push_back(new Sector(0, -2, 0));
+	sectors.push_back(new Sector(0, 0, -2));
+	sectors.push_back(new Sector(-1, -1, 0));
+	sectors.push_back(new Sector(0, -1, -1));
+	sectors.push_back(new Sector(-1, 0, -1));
 	
 	//TODO Worth it to have sectors figure this out on their own?
 	
@@ -66,10 +85,24 @@ Map::Map()
 	 *       \__/ x\__/
 	 *          \__/
 	 */
-	for (int i = 0; i < 6; ++i)
-	{
-		//gc->nbr[i] = Sector::createEmptySector(2);
-	}
+	sectors.push_back(new Sector(3, 0, 0));
+	sectors.push_back(new Sector(-3, 0, 0));
+	sectors.push_back(new Sector(0, 3, 0));
+	sectors.push_back(new Sector(0, -3, 0));
+	sectors.push_back(new Sector(0, 0, 3));
+	sectors.push_back(new Sector(0, 0, -3));
+	sectors.push_back(new Sector(2, 1, 0));
+	sectors.push_back(new Sector(-2, -1, 0));
+	sectors.push_back(new Sector(2, 0, 1));
+	sectors.push_back(new Sector(-2, 0, -1));
+	sectors.push_back(new Sector(0, 2, 1));
+	sectors.push_back(new Sector(0, -2, -1));
+	sectors.push_back(new Sector(1, 2, 0));
+	sectors.push_back(new Sector(-1, -2, 0));
+	sectors.push_back(new Sector(1, 0, 2));
+	sectors.push_back(new Sector(-1, 0, -2));
+	sectors.push_back(new Sector(0, 1, 2));
+	sectors.push_back(new Sector(0, -1, -2));
 }
 
 Map::Map(Map& other)
@@ -77,7 +110,7 @@ Map::Map(Map& other)
 	Map();
 	//for (auto it = other.sectors.begin(); it != other.sectors.cend(); ++it)
 	//	sectors.push_back(new Sector(**it));
-	sectors = other.sectors;
+	//sectors = other.sectors;
 	
 	gc = other.gc;
 	
@@ -96,7 +129,27 @@ short int Map::size()
 
 void Map::placeSector(Sector* s)
 {
-	//uhhhh need null sectors
+	if (s->startSector)
+	{//place in ring 2
+		//TODO place evenly according to # of players
+		for (auto it = sectors.begin(); it != sectors.end(); ++it)
+		{
+			if ((*it)->getDistance() == 2 && (*it)->id < 0)
+			{
+				Sector* d = (*it);
+				(*it) = s;
+				s->q = d->q;
+				s->r = d->r;
+				s->s = d->s;
+				delete d;
+			}
+		}
+		//TODO can't place
+		//TODO This is bad
+	}
+	else
+	{
+	}
 }
 
 std::list<Sector*> Map::getAllSectors()
@@ -105,7 +158,7 @@ std::list<Sector*> Map::getAllSectors()
 }
 
 Sector* Map::getSectorById(short int id)
-{
+{//TODO first digit is ring
 	for (auto it = sectors.cbegin(); it != sectors.cend(); ++it)
 		if ((*it)->id == id) return (*it);
 		
