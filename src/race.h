@@ -5,18 +5,18 @@ class Race;
 #include <list>
 #include <string>
 
-typedef unsigned char sint;
+typedef unsigned char byte;
 
 class Race
 {
 public:
 	enum Color {Red, Green, Blue, Yellow, White, Black} color;
 	
-	sint e, m, s; //starting economy, minerals, science
-	sint moves, builds, upgrades;
-	//sint buildCost...
-	sint rep, dip; //reputation and diplomacy tile spots
-	sint sector;
+	byte e, m, s; //starting economy, minerals, science
+	byte moves, builds, upgrades;
+	//byte buildCost...
+	byte rep, dip; //reputation and diplomacy tile spots
+	byte sector;
 	
 	std::string name;
 	

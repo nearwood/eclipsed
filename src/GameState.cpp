@@ -2,6 +2,7 @@
 #include "GameState.h"
 
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -34,6 +35,7 @@ GameState::~GameState()
 	//TODO sectors
 }
 
+//Initial state... TODO any state (!)
 GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState)
 {
 	GameState* gs = new GameState();
@@ -58,6 +60,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		r->name = jr.get("name", "UNKNOWN").asString();
 		racesList.push_back(r);
 	}
+	cout << "Loaded " << racesList.size() << " races. " << sizeof(Race) * racesList.size() + sizeof(racesList) << " bytes." << endl;
 	
 	std::list<Sector*> sectorList;
 	const Json::Value sectorsJson = sectors["sectors"];
@@ -85,8 +88,16 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		//s->name = js.get("name", "UNKNOWN").asString();
 		sectorList.push_back(s);
 	}
-	gs->map->setSectors(sectorList);
-	cout << "Loaded " << sectorList.size() << " sectors." << endl;
+	gs->map->setAvailableSectors(sectorList);
+	cout << "Loaded " << sectorList.size() << " sectors. " << sizeof(Sector) * sectorList.size() + sizeof(sectorList) << " bytes." << endl;
+	
+	//Get Galactic Center
+	Sector* sector = gs->map->getAvailableSectorById(1);
+	sector->q = 0;
+	sector->r = 0;
+	sector->s = 0;
+	gs->map->placeSector(sector);
+	//sector-> //TODO Setup GC defense, etc.
 	
 	const Json::Value players = initialState["players"];
 	for (uint i = 0; i < players.size(); ++i)
@@ -111,7 +122,6 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		}
 		
 		PlayerBoard *pb = new PlayerBoard(*race);
-		pb->name = race->name;
 		pb->num = po.get("player", i + 1).asInt();
 		gs->players.push_back(pb);
 		
@@ -126,14 +136,29 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		
 		//setup starting sector
 		int startSector = po.get("startSector", 9000).asInt();
-		Sector* sector = gs->map->getSectorById(startSector);
+		Sector* sector = gs->map->getAvailableSectorById(startSector);
 		sector->startSector = true;
+		switch (i)
+		{//TODO Fix this
+			case 0:
+			sector->q = 2;
+			sector->r = 0;
+			sector->s = 0;
+			break;
+			case 1:
+			sector->q = 0;
+			sector->r = 2;
+			sector->s = 0;
+			break;
+			case 2:
+			sector->q = 0;
+			sector->r = 0;
+			sector->s = 2;
+			break;
+		}
 		gs->map->placeSector(sector);
 		pb->placeInfluence(sector);
 	}
-	
-	//Sector* sector = gs->map->getSectorById(1); //Galactic center
-	
 	
 	//This seems horridly inefficient...
 	std::list<Race*> deleteList;
@@ -152,12 +177,15 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		if (deleteMe) deleteList.push_back(*rit);
 	}
 	
+	short int r = 0;
 	while (!deleteList.empty())
 	{
+		r++;
 		cout << "Freeing unused race: " << deleteList.front()->name << endl;
 		delete deleteList.front();
 		deleteList.pop_front();
 	}
+	cout << "Freed " << r << " race(s). " << sizeof(Race) * r << " bytes." << endl;
 	
 	return gs;
 }
@@ -202,10 +230,17 @@ int GameState::getVP(PlayerBoard* p)
 
 std::unordered_map<std::string, int> GameState::getScores()
 {
-	std::unordered_map<std::string, int> scores;
+	std::unordered_map<std::string, int> scores, ties;
 	
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
-		scores.insert({ (*it)->name, getVP(*it) });
+	{
+		short int score = getVP(*it);
+		scores.insert({ (*it)->name, score });
+		
+		//should probably use ordered map/sort and find dupes that way
+	}
+		
+	//TODO Determine tie-breakers
 	
 	return scores;
 }
@@ -241,7 +276,7 @@ PlayerBoard* GameState::getNextPlayer()
 	
 	if (p)
 	{
-		sint nextNum = p->num + 1;
+		byte nextNum = p->num + 1;
 		if (nextNum > players.size())
 			nextNum = 1;
 		
@@ -329,7 +364,11 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			//UPKEEP e,m,s balancing
 			for (PlayerBoard* l : childState->players)
 			{
-				//TODO Need sectors to do upkeep
+				byte c = l->getActionCost();
+				l->e -= c;
+				cout << l->name << " upkeep is " << (int)c << ", leaving " << (int)l->e << endl;
+				//TODO if l->e < 0 you bad
+				//TODO Reset actions, but not sector inf. discs
 			}
 			
 			cout << "CLEANUP PHASE" << endl;

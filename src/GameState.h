@@ -11,6 +11,8 @@
 #include "tech.h"
 #include "PlayerBoard.h"
 
+typedef unsigned char byte;
+
 class GameState
 {
 private:
@@ -36,7 +38,7 @@ public:
 	static GameState* fromJson(Json::Value& races, Json::Value& sectors, Json::Value& initialState);
 	static std::list<GameState*> generateChildren(GameState& parent);
 	bool isGameOver();
-	int getVP(PlayerBoard* p);
+	static int getVP(PlayerBoard* p);
 	std::unordered_map<std::string, int> getScores();
 	PlayerBoard* getFirstPlayer();
 	PlayerBoard* getCurrentPlayer();

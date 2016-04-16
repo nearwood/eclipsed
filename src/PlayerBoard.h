@@ -7,8 +7,17 @@ class PlayerBoard;
 
 #include <vector>
 #include <string>
+#include <map>
 
-typedef unsigned char sint;
+typedef unsigned char byte;
+
+//30 25 21 17 13 10 7 5 3 2 1 0 0
+
+//1  2  3  4  5  6  7   8   9   10  11  12
+//0, 1, 2, 3, 5, 7, 10, 13, 17, 21, 25, 30
+//0,    1,    2,   3,   5,   7,   10,  13,  17,  21,  25,  30
+//2n-2, 2n-3, 2n-4 2n-5 2n-5 2n-5 2n-4 2n-3 2n-1 2n+1 2n+3 2n+6
+//ugh just use a map...
 
 class InfluenceDisc;
 typedef InfluenceDisc Disc;
@@ -18,17 +27,18 @@ typedef InfluenceDisc Disc;
  */
 class PlayerBoard //: Race?
 {
-	std::vector<Disc*> inf;
+	std::vector<Disc*> inf; //TODO list of actioned/sectored vs free
+	static std::map<byte, byte> actionCost;
 	
 public:
 	Race& race;
 	
-	sint num; //play order
+	byte num; //play order
 	bool pass;
 	short int colonies;
 	
-	sint e, m, s; //economy, minerals, science
-	sint moves, builds, upgrades; //num builds, upgrades, moves used out of total
+	byte e, m, s; //economy, minerals, science
+	byte moves, builds, upgrades; //num builds, upgrades, moves used out of total
 	
 	std::string name; //TODO just keep ref to original?
 	
@@ -39,5 +49,5 @@ public:
 	
 	Disc* getFreeInfluence();
 	void placeInfluence(Sector* s);
-	
+	byte getActionCost();
 };

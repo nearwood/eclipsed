@@ -2,6 +2,8 @@
 
 #include <cmath>
 
+Sector* NullSector = new Sector(0, 0, 0);
+
 Sector::Sector(short int q, short int r, short int s):
 d(-1),
 ring(-1),

@@ -4,6 +4,7 @@
 #include "sectorlink.h"
 
 #include <list>
+#include <vector>
 //#include <unordered_map>
 
 //typedef std::unordered_map<int, Sector*> sectormap;
@@ -11,7 +12,7 @@
 class Map
 {
 	//sectormap sectors; //ref?
-	std::list<Sector*> sectors;
+	std::list<Sector*> availableSectors, sectors;
 	Sector* gc;
 	
 public:
@@ -20,12 +21,12 @@ public:
 
 	//static Sector* NullSector;
 
-	void setSectors(std::list<Sector*> s);
+	void setAvailableSectors(std::list<Sector*> s);
 	//void setSectors(sectormap s);
 	short int size();
 
 	std::list<Sector*> getAllSectors(); //TODO should be ref
-	Sector* getSectorById(short int id);
+	Sector* getAvailableSectorById(short int id);
 	
 	Sector* getGalacticCenter() { return this->gc; }
 	std::list<Sector*> getRing1Sectors();
