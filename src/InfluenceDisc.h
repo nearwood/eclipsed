@@ -20,6 +20,11 @@ public:
 		location = s;
 	}
 	
+	Sector* getSector()
+	{//what's the point of it being private now...
+		return location;
+	}
+	
 	bool isFree() { return location == nullptr; }
 };
 

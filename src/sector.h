@@ -32,6 +32,7 @@ public:
 	short int ring; //game ring, 0, 1, 2, 3 (for 3+)
 	short int id;
 	short int q, r, s;
+	short int vp;
 	short int eco, min, sci;
 	short int aeco, amin, asci;
 

@@ -45,6 +45,15 @@ Disc* PlayerBoard::getFreeInfluence()
 	return nullptr;
 }
 
+std::vector<Disc*> PlayerBoard::getPlacedInfluence()
+{
+	std::vector<Disc*> pi;
+	for (auto it = inf.cbegin(); it != inf.cend(); ++it)
+		if (!(*it)->isFree()) pi.push_back(*it);
+		
+	return pi;
+}
+
 void PlayerBoard::placeInfluence(Sector* s)
 {
 	//TODO Can I just use vector<Disc> instead of pointers since it returns refs?
@@ -68,4 +77,43 @@ byte PlayerBoard::getActionCost()
 	if (spent < 0) spent = 0;
 	
 	return actionCost.at(spent);
+}
+
+short int PlayerBoard::getVP()
+{
+	/*
+	•	Reputation Tiles (1–4 VP per tile)
+	•	Ambassador Tiles (1 VP per tile)
+	•	Hexes with an Influence Disc (1–4 VP per hex)
+	•	Discovery Tiles (2 VP per tile that was kept VP side up)
+	•	Monoliths on own hexes (3 VP per Monolith)
+	•	Progress on the Technology Tracks:
+		4 Technology Tiles on a track = 1 VP,
+		5 tiles = 2 VP, 6 tiles = 3 VP, 7 tiles = 5 VP
+	•	Traitor Card (–2 VP!)
+	•	Species bonuses
+	
+	two player game
+	The two player game is strategically slightly different from
+	the multiplayer game. Players should also be advised that
+	the Descendants and Planta benefit from their species-spe­
+	cific fast expansion capabilities and are thus stronger than
+	other species in a two-player setting. It is recommended
+	not to use these species in a two player game.
+	
+	In case of a tie, the total amount of Resources (Money,
+	Science and Materials) in each tied player’s Storage is the
+	tie breaker.
+	*/
+	
+	//Hexes with an influence disc
+	short int vp = 0;
+	std::vector<Disc*> pi = this->getPlacedInfluence();
+	for (auto it = pi.cbegin(); it != pi.cend(); ++it)
+	{
+		Sector* loc = (*it)->getSector();
+		vp += loc->vp;
+	}
+	
+	return vp;
 }

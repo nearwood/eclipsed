@@ -70,6 +70,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		Sector *s = new Sector(-1, -1, -1);
 		s->ring = js["ring"].asInt();
 		s->id = js["id"].asInt();
+		s->vp = js["vp"].asInt();
 		s->ancientSpawn = js["ancient"].asBool();
 		s->startSector = js["startSector"].asBool();
 		
@@ -198,44 +199,41 @@ bool GameState::isGameOver()
 	return false;
 }
 
-int GameState::getVP(PlayerBoard* p)
-{
-	//assuming p is in list, how many VP does it have?
-	return 0;
-	/*
-	•	Reputation Tiles (1–4 VP per tile)
-	•	Ambassador Tiles (1 VP per tile)
-	•	Hexes with an Influence Disc (1–4 VP per hex)
-	•	Discovery Tiles (2 VP per tile that was kept VP side up)
-	•	Monoliths on own hexes (3 VP per Monolith)
-	•	Progress on the Technology Tracks:
-		4 Technology Tiles on a track = 1 VP,
-		5 tiles = 2 VP, 6 tiles = 3 VP, 7 tiles = 5 VP
-	•	Traitor Card (–2 VP!)
-	•	Species bonuses
-	
-	two player game
-	The two player game is strategically slightly different from
-	the multiplayer game. Players should also be advised that
-	the Descendants and Planta benefit from their species-spe­
-	cific fast expansion capabilities and are thus stronger than
-	other species in a two-player setting. It is recommended
-	not to use these species in a two player game.
-	
-	In case of a tie, the total amount of Resources (Money,
-	Science and Materials) in each tied player’s Storage is the
-	tie breaker.
-	*/
-}
-
 std::unordered_map<std::string, int> GameState::getScores()
 {
-	std::unordered_map<std::string, int> scores, ties;
+	std::unordered_map<std::string, int> scores;
+	std::unordered_map<int, PlayerBoard*> ties;
 	
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
 	{
-		short int score = getVP(*it);
-		scores.insert({ (*it)->name, score });
+		//Get VP
+		short int score = (*it)->getVP();
+		
+		//Determine if anyone else has that VP
+		auto found = ties.find(score);
+		if (found == ties.cend())
+		{//if not make note for future passes
+			scores[(*it)->name] =  score;
+			ties.insert({ score, (*it) });
+			cout << "notie: " << (*it)->name << ": " << score << endl;
+		}
+		else
+		{//Tie with another player, add E, M, S to score
+			//For clarity, this should ideally be separate from VP, but we will just add it to the VP for now
+			
+			//insert tied with player score
+			PlayerBoard* pb = found->second;
+			short int score2 = pb->getVP();
+			score2 += pb->e + pb->m + pb->s;
+			scores[pb->name] = score2;
+			
+			//insert this player's score
+			score += (*it)->e + (*it)->m + (*it)->s;
+			scores[(*it)->name] =  score;
+			cout << "tie: " << (*it)->name << ": " << score << endl;
+			cout << "tie: " << pb->name << ": " << score2 << endl;
+			//And if it's still a tie at this point, tough.
+		}
 		
 		//should probably use ordered map/sort and find dupes that way
 	}

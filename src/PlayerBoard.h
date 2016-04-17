@@ -48,6 +48,9 @@ public:
 	PlayerBoard(PlayerBoard& other);
 	
 	Disc* getFreeInfluence();
+	std::vector<Disc*> getPlacedInfluence();
 	void placeInfluence(Sector* s);
 	byte getActionCost();
+	
+	short int getVP();
 };
