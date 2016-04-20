@@ -308,25 +308,29 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	//when everyone passes combat phase
 	//combat is random
 	
-	std::list<GameState*> children;
-	GameState* childState = new GameState(parent);
+	PlayerBoard *currentBoard = parent.getCurrentPlayer();
 	
-	PlayerBoard *currentBoard = childState->getCurrentPlayer();
-	//TODO assert currentBoard != nullptr
+	std::list<GameState*> children;
+	
+	//TODO assert childBoard != nullptr
 	if (!currentBoard->pass)
 	{
 		cout << "Playing as: " << currentBoard->name << endl;
 		
+		cout << "Pass" << endl; //TODO state->Pass()
+		GameState* childState = new GameState(parent); //TODO Shouldn't we use parent first? Or parent is already 'done'?
+		PlayerBoard *childBoard = childState->getCurrentPlayer();
+		
 		//try passing if we haven't already
-		//bool firstPass = currentBoard->pass();
-		cout << "Pass" << endl;
-		currentBoard->pass = true;
+		//bool firstPass = childBoard->pass();
+		
+		childBoard->pass = true;
 		
 		//check if first pass
 		bool firstPass = true;
 		for (PlayerBoard* l : childState->players)
 		{
-			if (l->pass && l != currentBoard)
+			if (l->pass && l != childBoard)
 			{
 				firstPass = false;
 				break;
@@ -338,20 +342,51 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		if (firstPass)
 		{//If first pass set next round's first player.
 			childState->lastFirstPlayer = childState->firstPlayer;
-			childState->firstPlayer = currentBoard->name;
+			childState->firstPlayer = childBoard->name;
 		}
 		
 		//going to have to force a pass at some point, preferably soon after e < 0 as you cannot action all your owned space away, and there are diminishing returns up to that point.
 		
 		PlayerBoard *nextPlayer = childState->getNextPlayer();
 		childState->currentPlayer = nextPlayer->name; //TODO Null check?
-		
 		children.push_back(childState);
+		
+		//Try moves until actions run out
+		Disc* d = currentBoard->getFreeInfluence();
+		if (d != nullptr)
+		{
+			//Discovery
+			std::vector<Disc*> placedInf = currentBoard->getPlacedInfluence();
+			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
+			{//For each placed influence
+				Sector* sectorA = (*it)->getSector();
+				std::list<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
+				for (Sector* s : adjacentSectors)
+				{//For all 'empty' sector positions around the placed influence
+					GameState* cs = new GameState(parent);
+					PlayerBoard* cb = childState->getCurrentPlayer();
+					
+					cs->map->placeSector(s);
+					//optionally, place influence and flip colonize token
+					
+					PlayerBoard *nextPlayer = cs->getNextPlayer();
+					cs->currentPlayer = nextPlayer->name;
+					children.push_back(cs);
+				}
+			}
+			
+			
+			
+			
+		}
 	}
 	else
 	{
-		if (childState->allPlayersPass())
+		if (parent.allPlayersPass())
 		{//If last pass, end the round
+			
+			GameState* childState = new GameState(parent);
+			
 			cout << "All players pass." << endl;
 			//TODO Do all phases here.
 			
@@ -360,6 +395,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			
 			cout << "UPKEEP PHASE" << endl;
 			//UPKEEP e,m,s balancing
+			
 			for (PlayerBoard* l : childState->players)
 			{
 				byte c = l->getActionCost();
@@ -383,7 +419,6 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		}
 		else
 		{
-			delete childState;
 			//reactions
 			//build, upgrade, move
 		}

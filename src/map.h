@@ -27,6 +27,7 @@ public:
 
 	std::list<Sector*> getAllSectors(); //TODO should be ref
 	Sector* getAvailableSectorById(short int id);
+	std::list<Sector*> getPotentialAdjacentSectors(Sector& s);
 	
 	Sector* getGalacticCenter() { return this->gc; }
 	std::list<Sector*> getRing1Sectors();

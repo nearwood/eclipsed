@@ -82,6 +82,13 @@ short int Map::size()
 	return sectors.size(); //ideally this should be the filled graph size, not just what was loaded.
 }
 
+//Get a list of available sectors, one for each free location around s
+std::list<Sector*> Map::getPotentialAdjacentSectors(Sector& s)
+{
+	//TODO Randomly pick sector from each ring that is in or adjacent to s
+	return std::list<Sector*>();
+}
+
 void Map::placeSector(Sector* s) //TODO Orientation
 {
 	//if (s->startSector) //place in ring 2
