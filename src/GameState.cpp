@@ -245,6 +245,15 @@ std::unordered_map<std::string, int> GameState::getScores()
 	return scores;
 }
 
+PlayerBoard* GameState::getPlayer(string name)
+{
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+		if ((*it)->name == name) return *it;
+	
+	return nullptr;
+
+}
+
 PlayerBoard* GameState::getFirstPlayer()
 {
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
@@ -404,9 +413,6 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	{
 		if (parent.allPlayersPass())
 		{//If last pass, end the round
-			
-			GameState* childState = new GameState(parent);
-			
 			cout << "All players pass." << endl;
 			//TODO Do all phases here.
 			
@@ -416,39 +422,49 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			cout << "UPKEEP PHASE" << endl;
 			//UPKEEP e,m,s balancing
 			
-			for (PlayerBoard* l : childState->players)
-			{
+			for (PlayerBoard* l : parent.players)
+			{	
+				GameState* childState = new GameState(parent);
 				char c = l->getActionCost();
-				l->e -= c;
-				cout << l->name << " upkeep is " << (int)c << ", leaving " << (int)l->e << endl;
-				if (l->e < 0)
-				{
-					//TODO generate child states for each possible (!) trade/raze
-					//convert m and/or s to restore some e (usually 2->1, depends on race)
-					
-					//TODO add colonies back to board, recalc upkeep on each
-					
-					cout << l->name << " bankrupt. Razing colonies?" << endl;
-					//repeatedly raze colonies or whatever until out of red
-					l->e = 0;
-					
-					//if not out of red and no discs to remove, game over--calc score.
+
+				if (c > l->e)
+				{//if cost is more than economy
+					//trade m,s to try and make up difference
+					short int extra = (l->m + l->s) / 2;
+					//TODO incremental m,s sacrifice
+					if (extra + l->e >= c)
+					{//cost is ok this turn
+						GameState* cs = new GameState(parent);
+						PlayerBoard* p = cs->getPlayer(l->name);
+						cout << l->name << " trading down m, s" << endl;
+						p->m = p->s = 0;
+						p->e += extra - c;
+						cs->roundCleanup();
+						children.push_back(cs);
+					}
+					else
+					{//trading isn't enough
+						GameState* cs = new GameState(parent);
+						PlayerBoard* p = cs->getPlayer(l->name);
+						
+						//TODO raze discs
+
+						cout << l->name << " bankrupt. Razing colonies?" << endl;
+						cs->roundCleanup();
+						children.push_back(cs);
+					}
 				}
-				
+				else
+				{
+					GameState* cs = new GameState(parent);
+					PlayerBoard* p = cs->getPlayer(l->name);
+					p->e -= c;
+					cout << p->name << " upkeep is " << (int)c << ", leaving " << (int)p->e << endl;
+				}
+
+				//TODO if not out of red and no discs to remove, game over--calc score.
 				//TODO Reset actions, but not sector inf. discs
 			}
-			
-			cout << "CLEANUP PHASE" << endl;
-			//go to next round if there is one
-			childState->round++;
-			for (PlayerBoard* l : childState->players)
-			{
-				l->pass = false;
-				//do whatever else resets here.
-				//reset settler ships
-			}
-			
-			children.push_back(childState);
 		}
 		else
 		{
@@ -460,3 +476,17 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
 	return children;
 }
+
+void GameState::roundCleanup()
+{
+	cout << "CLEANUP PHASE" << endl;
+	//go to next round if there is one
+	this->round++;
+	for (PlayerBoard* l : this->players)
+	{
+		l->pass = false;
+		//do whatever else resets here.
+		//reset settler ships
+	}
+}
+

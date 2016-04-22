@@ -40,10 +40,12 @@ public:
 	bool isGameOver();
 	static int getVP(PlayerBoard* p);
 	std::unordered_map<std::string, int> getScores();
+	PlayerBoard* getPlayer(std::string name);
 	PlayerBoard* getFirstPlayer();
 	PlayerBoard* getCurrentPlayer();
 	PlayerBoard* getNextPlayer();
 	PlayerBoard* getLastFirstPlayer();
+	void roundCleanup();
 	bool allPlayersPass();
 	//std::list<GameState*> getChildren();
 	
