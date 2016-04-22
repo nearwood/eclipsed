@@ -352,7 +352,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		children.push_back(childState);
 		
 		//Try moves until actions run out
-		Disc* d = currentBoard->getFreeInfluence();
+		Disc* d = currentBoard->getFreeInfluence(); //just need to check, no need to get
 		if (d != nullptr)
 		{
 			//Discovery
@@ -363,22 +363,37 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 				std::list<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the placed influence
+					Sector* newSector = new Sector(*s);
 					GameState* cs = new GameState(parent);
-					PlayerBoard* cb = childState->getCurrentPlayer();
+					PlayerBoard* cb = cs->getCurrentPlayer();
 					
-					cs->map->placeSector(s);
-					//optionally, place influence and flip colonize token
+					cs->map->placeSector(newSector); //TODO Need to copy sector to other gamestate
 					
 					PlayerBoard *nextPlayer = cs->getNextPlayer();
 					cs->currentPlayer = nextPlayer->name;
 					children.push_back(cs);
+
+					//optionally, place influence and flip colonize token
+					cs = new GameState(parent);
+					cb = cs->getCurrentPlayer();
+					Sector* newSector2 = new Sector(*newSector); //ugh
+					cs->map->placeSector(newSector2);
+					Disc* freeInf = cb->getFreeInfluence();
+					if (freeInf != nullptr)
+					{//TODO Might be redundant since we check parent
+						freeInf->setSector(newSector2);
+					}
+					else
+					{//delete state, we didn't need to create it
+						delete cs; //TODO delete entire composition thru dtr
+					}
 				}
 			}
-			
-			
-			
-			
 		}
+
+		//TODO for each free influence...
+
+
 	}
 	else
 	{

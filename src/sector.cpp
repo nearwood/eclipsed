@@ -23,12 +23,12 @@ influence(nullptr)
 }
 
 Sector::Sector(Sector& other):
-d(-1),
+d(other.d),
 //planets(other.planets),
 ancientSpawn(other.ancientSpawn),
 ancientBonus(other.ancientBonus),
 startSector(other.startSector),
-ring(-1),
+ring(other.ring),
 id(other.id),
 vp(other.vp),
 q(other.q),
