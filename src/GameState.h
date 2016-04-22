@@ -48,4 +48,5 @@ public:
 	//std::list<GameState*> getChildren();
 	
 	//hashmap of player*->PlayerState?
+	short int lastRound; //should be static
 };

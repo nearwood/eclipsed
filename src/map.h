@@ -12,7 +12,8 @@
 class Map
 {
 	//sectormap sectors; //ref?
-	std::list<Sector*> availableSectors, sectors;
+	//need random access for random pick, and always < 50 elements
+	std::vector<Sector*> availableSectors, sectors;
 	Sector* gc;
 	
 public:
@@ -21,25 +22,22 @@ public:
 
 	//static Sector* NullSector;
 
-	void setAvailableSectors(std::list<Sector*> s);
+	void setAvailableSectors(std::vector<Sector*> s);
 	//void setSectors(sectormap s);
 	short int size();
 
-	std::list<Sector*> getAllSectors(); //TODO should be ref
+	std::vector<Sector*> getAllSectors(); //TODO should be ref
 	Sector* getAvailableSectorById(short int id);
-	std::list<Sector*> getPotentialAdjacentSectors(Sector& s);
+	std::vector<Sector*> getPotentialAdjacentSectors(Sector& s);
 	
 	Sector* getGalacticCenter() { return this->gc; }
-	std::list<Sector*> getRing1Sectors();
-	std::list<Sector*> getRing2Sectors();
-	std::list<Sector*> getRing3Sectors();
+	std::vector<Sector*> getRingSectors(int ring);
 	
-	Sector* getRandomRing1Sector();
-	Sector* getRandomRing2Sector();
-	Sector* getRandomRing3Sector();
+	Sector* getRandomRingSector(int ring);
 	
 	void placeSector(Sector* s);
 	
-	static Sector* createEmptySector();
-	static void adjacentSectors(Sector* a, Sector* b, Sector::Side s);
+	static int getRing(int q, int r, int s);
+	//static Sector* createEmptySector();
+	//static void adjacentSectors(Sector* a, Sector* b, Sector::Side s);
 };

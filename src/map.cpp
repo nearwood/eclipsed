@@ -1,6 +1,7 @@
 #include "map.h"
 
 #include <iostream>
+#include <cmath>
 
 //Sector* Map::NullSector = new Sector();
 
@@ -72,7 +73,7 @@ Map::Map(Map& other)
 	//Fill out graph
 }
 
-void Map::setAvailableSectors(std::list<Sector*> s)
+void Map::setAvailableSectors(std::vector<Sector*> s)
 {
 	availableSectors = s; //TODO sort or someshit
 }
@@ -83,10 +84,71 @@ short int Map::size()
 }
 
 //Get a list of available sectors, one for each free location around s
-std::list<Sector*> Map::getPotentialAdjacentSectors(Sector& s)
-{
-	//TODO Randomly pick sector from each ring that is in or adjacent to s
-	return std::list<Sector*>();
+std::vector<Sector*> Map::getPotentialAdjacentSectors(Sector& s)
+{//TODO Randomly pick sector from each ring that is in or adjacent to s
+	//Note that any index pointer could be null if the available sectors for that ring are empty
+	std::vector<Sector*> pot;
+	int ring[6];
+	Sector* a;
+	
+	ring[0] = Map::getRing(s.q + 1, s.r, s.s);
+	ring[1] = Map::getRing(s.q, s.r + 1, s.s);
+	ring[2] = Map::getRing(s.q, s.r, s.s + 1);
+	ring[3] = Map::getRing(s.q - 1, s.r, s.s);
+	ring[4] = Map::getRing(s.q, s.r - 1, s.s);
+	ring[5] = Map::getRing(s.q, s.r, s.s - 1);
+	
+	for (int i = 0; i < 6; ++i)
+	{
+		if (ring[i] > 3) ring[i] = 3;
+		
+		switch (ring[i])
+		{
+			case 1:
+			a = getRandomRingSector(1);
+			break;
+			
+			case 2:
+			a = getRandomRingSector(2);
+			break;
+			
+			case 3:
+			a = getRandomRingSector(3);
+			break;
+			
+			default:
+			break;
+		}
+		
+		if (a != nullptr)
+		{
+			switch (i) //lol
+			{
+				case 0:
+				a->q = s.q + 1; a->r = s.r; a->s = s.s;
+				break;
+				case 1:
+				a->q = s.q; a->r = s.r + 1; a->s = s.s;
+				break;
+				case 2:
+				a->q = s.q; a->r = s.r; a->s = s.s + 1;
+				break;
+				case 3:
+				a->q = s.q - 1; a->r = s.r; a->s = s.s;
+				break;
+				case 4:
+				a->q = s.q; a->r = s.r - 1; a->s = s.s;
+				break;
+				case 5:
+				a->q = s.q; a->r = s.r; a->s = s.s - 1;
+				break;
+			}
+			
+			pot.push_back(a);
+		}
+	}
+	
+	return pot;
 }
 
 void Map::placeSector(Sector* s) //TODO Orientation
@@ -105,7 +167,7 @@ void Map::placeSector(Sector* s) //TODO Orientation
 	}
 }
 
-std::list<Sector*> Map::getAllSectors()
+std::vector<Sector*> Map::getAllSectors()
 {
 	return this->sectors;
 }
@@ -119,32 +181,35 @@ Sector* Map::getAvailableSectorById(short int id)
 }
 
 //Sector* Map::getGalacticCenter() { return this->gc; }
-std::list<Sector*> Map::getRing1Sectors()
+
+std::vector<Sector*> Map::getRingSectors(int ring)
 {
-	return std::list<Sector*>();
+	std::vector<Sector*> ringSectors;
+	
+	for (Sector* s : availableSectors)
+		if (s->ring == ring) ringSectors.push_back(s);
+		
+	return ringSectors;
 }
 
-std::list<Sector*> Map::getRing2Sectors()
+Sector* Map::getRandomRingSector(int ring)
 {
-	return std::list<Sector*>();
+	std::vector<Sector*> ringSectors = getRingSectors(ring);
+	switch (ringSectors.size())
+	{
+		case 0:
+		return nullptr;
+		
+		case 1:
+		return ringSectors[0];
+		
+		default:
+		int r = rand() % ringSectors.size();
+		return ringSectors[r];
+	}
 }
 
-std::list<Sector*> Map::getRing3Sectors()
-{
-	return std::list<Sector*>();
-}
-
-Sector* Map::getRandomRing1Sector()
-{
-	return nullptr;
-}
-
-Sector* Map::getRandomRing2Sector()
-{
-	return nullptr;
-}
-
-Sector* Map::getRandomRing3Sector()
-{
-	return nullptr;
+int Map::getRing(int q, int r, int s)
+{//TODO consolidate this with sector distance
+	return std::max(std::max(abs(q), abs(r)), abs(s));
 }

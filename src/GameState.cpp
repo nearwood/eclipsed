@@ -17,7 +17,8 @@ GameState::GameState(GameState& other)
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
 map(other.map),
-round(other.round)
+round(other.round),
+lastRound(other.lastRound)
 {
 	for (auto it = other.players.cbegin(); it != other.players.cend(); ++it)
 		players.push_back(new PlayerBoard(**it));
@@ -41,6 +42,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	GameState* gs = new GameState();
 	
 	gs->round = 1;
+	gs->lastRound = initialState["rounds"].asInt();
 	
 	//load all races
 	//load game json, players, and assign playerboards with race
@@ -62,7 +64,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	}
 	cout << "Loaded " << racesList.size() << " races. " << sizeof(Race) * racesList.size() + sizeof(racesList) << " bytes." << endl;
 	
-	std::list<Sector*> sectorList;
+	std::vector<Sector*> sectorList;
 	const Json::Value sectorsJson = sectors["sectors"];
 	for (uint i = 0; i < sectorsJson.size(); ++i)
 	{
@@ -194,7 +196,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 //do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	if (round == 3) return true;
+	if (round > lastRound) return true;
 	
 	return false;
 }
@@ -360,9 +362,11 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
 			{//For each placed influence
 				Sector* sectorA = (*it)->getSector();
-				std::list<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
+				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the placed influence
+					if (s == nullptr) continue;
+					
 					Sector* newSector = new Sector(*s);
 					GameState* cs = new GameState(parent);
 					PlayerBoard* cb = cs->getCurrentPlayer();
@@ -379,13 +383,14 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					Sector* newSector2 = new Sector(*newSector); //ugh
 					cs->map->placeSector(newSector2);
 					Disc* freeInf = cb->getFreeInfluence();
-					if (freeInf != nullptr)
+					if (freeInf != nullptr) //TODO Check this first before init sector
 					{//TODO Might be redundant since we check parent
 						freeInf->setSector(newSector2);
 					}
 					else
 					{//delete state, we didn't need to create it
 						delete cs; //TODO delete entire composition thru dtr
+						delete newSector2;
 					}
 				}
 			}
@@ -413,10 +418,23 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			
 			for (PlayerBoard* l : childState->players)
 			{
-				byte c = l->getActionCost();
+				char c = l->getActionCost();
 				l->e -= c;
 				cout << l->name << " upkeep is " << (int)c << ", leaving " << (int)l->e << endl;
-				//TODO if l->e < 0 you bad
+				if (l->e < 0)
+				{
+					//TODO generate child states for each possible (!) trade/raze
+					//convert m and/or s to restore some e (usually 2->1, depends on race)
+					
+					//TODO add colonies back to board, recalc upkeep on each
+					
+					cout << l->name << " bankrupt. Razing colonies?" << endl;
+					//repeatedly raze colonies or whatever until out of red
+					l->e = 0;
+					
+					//if not out of red and no discs to remove, game over--calc score.
+				}
+				
 				//TODO Reset actions, but not sector inf. discs
 			}
 			
@@ -439,6 +457,6 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		}
 	}
 	
-	cout << "Generated " << children.size() << " children." << endl;
+	cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
 	return children;
 }

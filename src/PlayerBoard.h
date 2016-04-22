@@ -37,7 +37,7 @@ public:
 	bool pass;
 	short int colonies;
 	
-	byte e, m, s; //economy, minerals, science
+	char e, m, s; //economy, minerals, science
 	byte moves, builds, upgrades; //num builds, upgrades, moves used out of total
 	
 	std::string name; //TODO just keep ref to original?

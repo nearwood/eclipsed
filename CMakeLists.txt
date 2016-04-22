@@ -19,12 +19,12 @@ INCLUDE_DIRECTORIES(${JSONCPP_INCLUDE_DIRS})
 #qt5_wrap_cpp(MOCSRC src/mainwindow.cpp)
 
 #SET(INCLUDES src/.h)
-SET(SOURCES src/main.cpp
-			#src/Action.cpp
+SET(SOURCES src/Action.cpp
 			src/game.cpp
 			src/GameState.cpp
-			src/map.cpp
+			src/main.cpp
 			#src/mainwindow.cpp
+			src/map.cpp
 			#src/planet.cpp
 			src/PlayerBoard.cpp
 			src/race.cpp
