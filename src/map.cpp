@@ -14,6 +14,7 @@ Map::Map()
 	 * \__/
 	 */
 	
+	
 	/* Ring 1
 	 *     __
 	 *  __/ q\__
@@ -61,21 +62,28 @@ Map::Map()
 
 Map::Map(Map& other)
 {
-	Map();
-	//for (auto it = other.sectors.begin(); it != other.sectors.cend(); ++it)
-	//	sectors.push_back(new Sector(**it));
-	//sectors = other.sectors;
+	//Map();
 	
-	//TODO Deep copy of availableSectors & sectors
-	//TODO Advanced copies just a diff??!?!
-	//gc = new Sector(*(other.gc));
+	gc = new Sector(*(other.gc)); //TODO Why do i even need this?
+	
+	for (Sector* s : other.sectors)
+		sectors.push_back(new Sector(*s));
+		
+	for (Sector* s : other.availableSectors)
+		availableSectors.push_back(new Sector(*s));
+	
+	//TODO Eventually we can take advantage of the fact that once sectors are placed in the game, they do not move (children of states can just shallow copy board)
+	
 	
 	//Fill out graph
 }
 
-void Map::setAvailableSectors(std::vector<Sector*> s)
+void Map::setAvailableSectors(std::vector<Sector*> sectorList)
 {
-	availableSectors = s; //TODO sort or someshit
+	availableSectors.clear(); //TODO deep pointer clear... but this shouldn't really be called more than once
+	
+	for (Sector* s : sectorList)
+		availableSectors.push_back(new Sector(*s)); //TODO sort or someshit
 }
 
 short int Map::size()
@@ -212,4 +220,13 @@ Sector* Map::getRandomRingSector(int ring)
 int Map::getRing(int q, int r, int s)
 {//TODO consolidate this with sector distance
 	return std::max(std::max(abs(q), abs(r)), abs(s));
+}
+
+Map::~Map()
+{
+	for (Sector* s : sectors)
+		delete s;
+		
+	for (Sector* s : availableSectors)
+		delete s;
 }

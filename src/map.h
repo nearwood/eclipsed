@@ -19,18 +19,21 @@ class Map
 public:
 	Map();
 	Map(Map& other);
+	~Map();
 
 	//static Sector* NullSector;
 
-	void setAvailableSectors(std::vector<Sector*> s);
+	void setAvailableSectors(std::vector<Sector*> sectorList);
 	//void setSectors(sectormap s);
 	short int size();
-
+	
+	
 	std::vector<Sector*> getAllSectors(); //TODO should be ref
 	Sector* getAvailableSectorById(short int id);
 	std::vector<Sector*> getPotentialAdjacentSectors(Sector& s);
 	
 	Sector* getGalacticCenter() { return this->gc; }
+	void setGalacticCenter(Sector* s) { this->gc = s; }
 	std::vector<Sector*> getRingSectors(int ring);
 	
 	Sector* getRandomRingSector(int ring);

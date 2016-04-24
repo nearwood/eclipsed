@@ -16,10 +16,11 @@ GameState::GameState(GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
-map(other.map),
 round(other.round),
 lastRound(other.lastRound)
 {
+	map = new Map(*(other.map));
+	
 	for (auto it = other.players.cbegin(); it != other.players.cend(); ++it)
 		players.push_back(new PlayerBoard(**it));
 	
@@ -32,6 +33,10 @@ GameState::~GameState()
 {
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
 		delete *it;
+		
+	delete map;
+		
+	
 		
 	//TODO sectors
 }
@@ -100,6 +105,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	sector->r = 0;
 	sector->s = 0;
 	gs->map->placeSector(sector);
+	gs->map->setGalacticCenter(sector); //TODO grumble...
 	//sector-> //TODO Setup GC defense, etc.
 	
 	const Json::Value players = initialState["players"];
@@ -372,12 +378,13 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			{//For each placed influence
 				Sector* sectorA = (*it)->getSector();
 				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
+				//TODO Get 3 sectors of a ring at a time, pick one
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the placed influence
 					if (s == nullptr) continue;
 					
-					Sector* newSector = new Sector(*s);
 					GameState* cs = new GameState(parent);
+					Sector* newSector = cs->map->getAvailableSectorById(s->id);
 					PlayerBoard* cb = cs->getCurrentPlayer();
 					
 					cs->map->placeSector(newSector); //TODO Need to copy sector to other gamestate
@@ -389,17 +396,19 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					//optionally, place influence and flip colonize token
 					cs = new GameState(parent);
 					cb = cs->getCurrentPlayer();
-					Sector* newSector2 = new Sector(*newSector); //ugh
-					cs->map->placeSector(newSector2);
 					Disc* freeInf = cb->getFreeInfluence();
 					if (freeInf != nullptr) //TODO Check this first before init sector
 					{//TODO Might be redundant since we check parent
-						freeInf->setSector(newSector2);
+						newSector = cs->map->getAvailableSectorById(s->id); //ugh
+						cs->map->placeSector(newSector);
+						freeInf->setSector(newSector);
+						PlayerBoard *nextPlayer = cs->getNextPlayer();
+						cs->currentPlayer = nextPlayer->name;
+						children.push_back(cs);
 					}
 					else
 					{//delete state, we didn't need to create it
 						delete cs; //TODO delete entire composition thru dtr
-						delete newSector2;
 					}
 				}
 			}
@@ -423,8 +432,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			//UPKEEP e,m,s balancing
 			
 			for (PlayerBoard* l : parent.players)
-			{	
-				GameState* childState = new GameState(parent);
+			{
 				char c = l->getActionCost();
 
 				if (c > l->e)
