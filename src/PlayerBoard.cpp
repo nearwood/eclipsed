@@ -6,14 +6,14 @@ using namespace std;
 
 std::map<byte, byte> PlayerBoard::actionCost = {{1, 0}, {2, 0}, {3, 1}, {4, 2}, {5, 3}, {6, 5}, {7, 7}, {8, 10}, {9, 13}, {10, 17}, {11, 21}, {12, 25}, {13, 30}};
 
-PlayerBoard::PlayerBoard(Race& r)
+PlayerBoard::PlayerBoard(Race* r)
 :race(r),
 pass(false)
 {
-	this->name = r.name;
-	this->e = r.e;
-	this->m = r.m;
-	this->s = r.s;
+	this->name = r->name;
+	this->e = r->e;
+	this->m = r->m;
+	this->s = r->s;
 	
 	for (int d = 1; d <= 13; ++d) //TODO add up to +3 later
 	{
@@ -116,4 +116,18 @@ short int PlayerBoard::getVP()
 	}
 	
 	return vp;
+}
+
+PlayerBoard::~PlayerBoard()
+{//valgrind keeps complaining that im trying to free already freed mem.... TODO
+	for (Disc* d : inf)
+		if (d != nullptr) delete d;
+	
+	for (Ship* d : deployedShips)
+		if (d != nullptr) delete d;
+	
+	for (Ship* d : unbuiltShips)
+		if (d != nullptr) delete d;
+		
+	delete race;
 }

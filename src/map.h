@@ -18,12 +18,12 @@ class Map
 	
 public:
 	Map();
-	Map(Map& other);
+	Map(const Map& other);
 	~Map();
 
 	//static Sector* NullSector;
 
-	void setAvailableSectors(std::vector<Sector*> sectorList);
+	void setAvailableSectors(std::vector<Sector> sectorList);
 	//void setSectors(sectormap s);
 	short int size();
 	

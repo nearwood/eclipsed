@@ -35,10 +35,6 @@ GameState::~GameState()
 		delete *it;
 		
 	delete map;
-		
-	
-		
-	//TODO sectors
 }
 
 //Initial state... TODO any state (!)
@@ -69,35 +65,35 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	}
 	cout << "Loaded " << racesList.size() << " races. " << sizeof(Race) * racesList.size() + sizeof(racesList) << " bytes." << endl;
 	
-	std::vector<Sector*> sectorList;
+	std::vector<Sector> sectorList;
 	const Json::Value sectorsJson = sectors["sectors"];
 	for (uint i = 0; i < sectorsJson.size(); ++i)
 	{
 		Json::Value js = sectorsJson[i];
-		Sector *s = new Sector(-1, -1, -1);
-		s->ring = js["ring"].asInt();
-		s->id = js["id"].asInt();
-		s->vp = js["vp"].asInt();
-		s->ancientSpawn = js["ancient"].asBool();
-		s->startSector = js["startSector"].asBool();
+		Sector s(-1, -1, -1);
+		s.ring = js["ring"].asInt();
+		s.id = js["id"].asInt();
+		s.vp = js["vp"].asInt();
+		s.ancientSpawn = js["ancient"].asBool();
+		s.startSector = js["startSector"].asBool();
 		
 		Json::Value squares = js["squares"];
 		//assert storage.size() == 3
-		s->eco = squares[0].asInt();
-		s->min = squares[1].asInt();
-		s->sci = squares[2].asInt();
+		s.eco = squares[0].asInt();
+		s.min = squares[1].asInt();
+		s.sci = squares[2].asInt();
 		
 		Json::Value advSquares = js["advancedSquares"];
 		//assert storage.size() == 3
-		s->aeco = advSquares[0].asInt();
-		s->amin = advSquares[1].asInt();
-		s->asci = advSquares[2].asInt();
+		s.aeco = advSquares[0].asInt();
+		s.amin = advSquares[1].asInt();
+		s.asci = advSquares[2].asInt();
 		
-		//s->name = js.get("name", "UNKNOWN").asString();
+		//s.name = js.get("name", "UNKNOWN").asString();
 		sectorList.push_back(s);
 	}
 	gs->map->setAvailableSectors(sectorList);
-	cout << "Loaded " << sectorList.size() << " sectors. " << sizeof(Sector) * sectorList.size() + sizeof(sectorList) << " bytes." << endl;
+	cout << "Loaded " << sectorList.size() << " sectors. " << sizeof(Sector) * sectorList.size() + sizeof(sectorList) << " bytes." << endl; //TODO recheck
 	
 	//Get Galactic Center
 	Sector* sector = gs->map->getAvailableSectorById(1);
@@ -130,7 +126,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 			continue;
 		}
 		
-		PlayerBoard *pb = new PlayerBoard(*race);
+		PlayerBoard *pb = new PlayerBoard(race);
 		pb->num = po.get("player", i + 1).asInt();
 		gs->players.push_back(pb);
 		
@@ -176,7 +172,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		bool deleteMe = true;
 		for (auto pit = gs->players.cbegin(); pit != gs->players.cend(); ++pit)
 		{
-			if (&(*pit)->race == (*rit))
+			if ((*pit)->race == (*rit))
 			{
 				deleteMe = false;
 				break;
@@ -334,7 +330,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	{
 		cout << "Playing as: " << currentBoard->name << endl;
 		
-		cout << "Pass" << endl; //TODO state->Pass()
+		//cout << "Pass" << endl; //TODO state->Pass()
 		GameState* childState = new GameState(parent); //TODO Shouldn't we use parent first? Or parent is already 'done'?
 		PlayerBoard *childBoard = childState->getCurrentPlayer();
 		
@@ -422,7 +418,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	{
 		if (parent.allPlayersPass())
 		{//If last pass, end the round
-			cout << "All players pass." << endl;
+			//cout << "All players pass." << endl;
 			//TODO Do all phases here.
 			
 			cout << "COMBAT PHASE" << endl;
@@ -457,7 +453,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 						
 						//TODO raze discs
 
-						cout << l->name << " bankrupt. Razing colonies?" << endl;
+						//cout << l->name << " bankrupt. Razing colonies?" << endl;
 						cs->roundCleanup();
 						children.push_back(cs);
 					}
@@ -467,7 +463,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					GameState* cs = new GameState(parent);
 					PlayerBoard* p = cs->getPlayer(l->name);
 					p->e -= c;
-					cout << p->name << " upkeep is " << (int)c << ", leaving " << (int)p->e << endl;
+					//cout << p->name << " upkeep is " << (int)c << ", leaving " << (int)p->e << endl;
 				}
 
 				//TODO if not out of red and no discs to remove, game over--calc score.

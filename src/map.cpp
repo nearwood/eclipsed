@@ -60,7 +60,7 @@ Map::Map()
 	//For ring 3, since we can add sectors at d >= 3, the idea is that we just handle them on a case-by-case basis.
 }
 
-Map::Map(Map& other)
+Map::Map(const Map& other)
 {
 	//Map();
 	
@@ -78,12 +78,12 @@ Map::Map(Map& other)
 	//Fill out graph
 }
 
-void Map::setAvailableSectors(std::vector<Sector*> sectorList)
+void Map::setAvailableSectors(std::vector<Sector> sectorList)
 {
 	availableSectors.clear(); //TODO deep pointer clear... but this shouldn't really be called more than once
 	
-	for (Sector* s : sectorList)
-		availableSectors.push_back(new Sector(*s)); //TODO sort or someshit
+	for (Sector s : sectorList)
+		availableSectors.push_back(new Sector(s)); //TODO sort or someshit
 }
 
 short int Map::size()
@@ -224,6 +224,8 @@ int Map::getRing(int q, int r, int s)
 
 Map::~Map()
 {
+	delete gc;
+	
 	for (Sector* s : sectors)
 		delete s;
 		

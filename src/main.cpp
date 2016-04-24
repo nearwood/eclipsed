@@ -143,8 +143,6 @@ int main(int argc, char *argv[])
 	
 	gameThread.join();
 	
-	//delete all things
-	
 	return 0;
 	
 	//QApplication a(argc, argv);

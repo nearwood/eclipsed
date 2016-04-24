@@ -52,10 +52,18 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 		}
 	}
 	
+	for (GameState *c : children)
+		delete c;
+	
 	return scores;
 }
 
 void Game::turn()
 {
 	
+}
+
+Game::~Game()
+{//TODO startState->map is getting deleted earlier
+	//delete startState;
 }

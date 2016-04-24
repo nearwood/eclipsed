@@ -31,7 +31,7 @@ class PlayerBoard //: Race?
 	static std::map<byte, byte> actionCost;
 	
 public:
-	Race& race;
+	Race* race;
 	
 	byte num; //play order
 	bool pass;
@@ -44,8 +44,9 @@ public:
 	
 	std::vector<Ship*> deployedShips, unbuiltShips;
 	
-	PlayerBoard(Race& r);
+	PlayerBoard(Race* r);
 	PlayerBoard(PlayerBoard& other);
+	~PlayerBoard();
 	
 	Disc* getFreeInfluence();
 	std::vector<Disc*> getPlacedInfluence();

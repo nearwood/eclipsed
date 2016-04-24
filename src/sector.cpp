@@ -22,7 +22,7 @@ influence(nullptr)
 	this->s = s;
 }
 
-Sector::Sector(Sector& other):
+Sector::Sector(const Sector& other):
 d(other.d),
 //planets(other.planets),
 ancientSpawn(other.ancientSpawn),
