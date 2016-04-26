@@ -50,11 +50,10 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 			}
 				//else if (v == it->second) //pick one out of equivalent moves
 		}
-	}
-	
-	for (GameState *c : children)
+		
 		delete c;
-	
+	}
+
 	return scores;
 }
 
