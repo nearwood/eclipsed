@@ -48,7 +48,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	//load all races
 	//load game json, players, and assign playerboards with race
 	//delete unused races
-	std::list<Race*> racesList; //might want a hashmap for easy deletion later
+	std::list<Race*> racesList; //TODO no need for pointers
 	const Json::Value racesJson = races["races"];
 	for (uint i = 0; i < racesJson.size(); ++i)
 	{
@@ -166,31 +166,11 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	}
 	
 	//This seems horridly inefficient...
-	std::list<Race*> deleteList;
-	for (auto rit = racesList.cbegin(); rit != racesList.cend(); ++rit)
-	{
-		bool deleteMe = true;
-		for (auto pit = gs->players.cbegin(); pit != gs->players.cend(); ++pit)
-		{
-			if ((*pit)->race == (*rit))
-			{
-				deleteMe = false;
-				break;
-			}
-		}
-		
-		if (deleteMe) deleteList.push_back(*rit);
-	}
 	
-	short int r = 0;
-	while (!deleteList.empty())
+	for (Race* r : racesList)
 	{
-		r++;
-		cout << "Freeing unused race: " << deleteList.front()->name << endl;
-		delete deleteList.front();
-		deleteList.pop_front();
+		delete r;
 	}
-	cout << "Freed " << r << " race(s). " << sizeof(Race) * r << " bytes." << endl;
 	
 	return gs;
 }

@@ -6,8 +6,7 @@ using namespace std;
 
 std::map<byte, byte> PlayerBoard::actionCost = {{1, 0}, {2, 0}, {3, 1}, {4, 2}, {5, 3}, {6, 5}, {7, 7}, {8, 10}, {9, 13}, {10, 17}, {11, 21}, {12, 25}, {13, 30}};
 
-PlayerBoard::PlayerBoard(Race* r)
-:race(r),
+PlayerBoard::PlayerBoard(Race* r):
 pass(false)
 {
 	this->name = r->name;
@@ -22,7 +21,6 @@ pass(false)
 }
 
 PlayerBoard::PlayerBoard(PlayerBoard& other):
-race(other.race),
 num(other.num),
 pass(other.pass),
 colonies(other.colonies),
@@ -31,7 +29,13 @@ m(other.m),
 s(other.s),
 name(other.name)
 {
-	inf = other.inf;
+	for (Disc* d : other.inf)
+	{
+		//oops didn't think about how to do this
+		//Sector* s = other.getSector();
+		//find sector, link to it
+		//inf.push_back(new Disc(*d));
+	}
 	
 	//std::list<Disc*> infAvailable, infSpent;
 	//std::list<Ship*> deployedShips, unbuiltShips;
@@ -121,13 +125,12 @@ short int PlayerBoard::getVP()
 PlayerBoard::~PlayerBoard()
 {//valgrind keeps complaining that im trying to free already freed mem.... TODO
 	for (Disc* d : inf)
-		if (d != nullptr) delete d;
+		delete d;
 	
 	for (Ship* d : deployedShips)
-		if (d != nullptr) delete d;
+		delete d;
 	
 	for (Ship* d : unbuiltShips)
-		if (d != nullptr) delete d;
-		
-	delete race;
+		delete d;
+	
 }

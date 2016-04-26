@@ -31,8 +31,6 @@ class PlayerBoard //: Race?
 	static std::map<byte, byte> actionCost;
 	
 public:
-	Race* race;
-	
 	byte num; //play order
 	bool pass;
 	short int colonies;
