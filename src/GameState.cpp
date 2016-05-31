@@ -6,6 +6,8 @@
 
 using namespace std;
 
+short int GameState::lastRound = 0;
+
 GameState::GameState()
 :round(0)
 {
@@ -16,8 +18,7 @@ GameState::GameState(GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
-round(other.round),
-lastRound(other.lastRound)
+round(other.round)
 {
 	map = new Map(*(other.map));
 	
@@ -43,7 +44,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	GameState* gs = new GameState();
 	
 	gs->round = 1;
-	gs->lastRound = initialState["rounds"].asInt();
+	GameState::lastRound = initialState["rounds"].asInt();
 	
 	//load all races
 	//load game json, players, and assign playerboards with race
@@ -178,7 +179,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 //do some trivial stuff quickly to determine who won
 bool GameState::isGameOver()
 {
-	if (round > lastRound) return true;
+	if (round > GameState::lastRound) return true;
 	
 	return false;
 }

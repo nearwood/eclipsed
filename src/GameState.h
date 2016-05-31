@@ -31,6 +31,7 @@ public:
 	//same as sector, one static list of all tech, then each state has status of available ones
 	
 	short int round;
+	static short int lastRound; //should be static
 	
 	GameState();
 	~GameState();
@@ -50,5 +51,4 @@ public:
 	//std::list<GameState*> getChildren();
 	
 	//hashmap of player*->PlayerState?
-	short int lastRound; //should be static
 };
