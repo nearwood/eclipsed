@@ -61,6 +61,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		r->e = storage[0].asInt();
 		r->m = storage[1].asInt();
 		r->s = storage[2].asInt();
+		r->trade = jr["trade"].asInt();
 		r->name = jr.get("name", "UNKNOWN").asString();
 		racesList.push_back(r);
 	}
@@ -127,7 +128,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 			continue;
 		}
 		
-		PlayerBoard *pb = new PlayerBoard(race);
+		PlayerBoard *pb = new PlayerBoard(*race);
 		pb->num = po.get("player", i + 1).asInt();
 		gs->players.push_back(pb);
 		
@@ -166,12 +167,32 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 		pb->placeInfluence(sector);
 	}
 	
-	//This seems horridly inefficient...
-	
-	for (Race* r : racesList)
+	//Probably a better way but this is done once per game so who cares.
+	std::list<Race*> deleteList;
+	for (auto rit = racesList.cbegin(); rit != racesList.cend(); ++rit)
 	{
-		delete r;
+		bool deleteMe = true;
+		for (auto pit = gs->players.cbegin(); pit != gs->players.cend(); ++pit)
+		{
+			if (&(*pit)->race == (*rit))
+			{
+				deleteMe = false;
+				break;
+			}
+		}
+		
+		if (deleteMe) deleteList.push_back(*rit);
 	}
+	
+	short int r = 0;
+	while (!deleteList.empty())
+	{
+		r++;
+		cout << "Freeing unused race: " << deleteList.front()->name << endl;
+		delete deleteList.front();
+		deleteList.pop_front();
+	}
+	cout << "Freed " << r << " race(s). " << sizeof(Race) * r << " bytes." << endl;
 	
 	return gs;
 }
@@ -349,13 +370,13 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		Disc* d = currentBoard->getFreeInfluence(); //just need to check, no need to get
 		if (d != nullptr)
 		{
-			//Discovery
+			//Explore
 			std::vector<Disc*> placedInf = currentBoard->getPlacedInfluence();
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
-			{//For each placed influence
+			{//For each placed influence //TODO Also for any unpinned ships
 				Sector* sectorA = (*it)->getSector();
 				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
-				//TODO Get 3 sectors of a ring at a time, pick one
+				
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the placed influence
 					if (s == nullptr) continue;
@@ -415,7 +436,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 				if (c > l->e)
 				{//if cost is more than economy
 					//trade m,s to try and make up difference
-					short int extra = (l->m + l->s) / 2;
+					short int extra = (l->m + l->s) / l->race.trade;
 					//TODO incremental m,s sacrifice
 					if (extra + l->e >= c)
 					{//cost is ok this turn

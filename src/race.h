@@ -13,7 +13,7 @@ public:
 	enum Color {Red, Green, Blue, Yellow, White, Black} color;
 	
 	byte e, m, s; //starting economy, minerals, science
-	byte moves, builds, upgrades;
+	byte moves, builds, upgrades, trade;
 	//byte buildCost...
 	byte rep, dip; //reputation and diplomacy tile spots
 	byte sector;

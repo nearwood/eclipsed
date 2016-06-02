@@ -31,6 +31,7 @@ class PlayerBoard //: Race?
 	static std::map<byte, byte> actionCost;
 	
 public:
+	Race& race; //TODO should be const, no easy way
 	byte num; //play order
 	bool pass;
 	short int colonies;
@@ -42,7 +43,7 @@ public:
 	
 	std::vector<Ship*> deployedShips, unbuiltShips;
 	
-	PlayerBoard(Race* r);
+	PlayerBoard(Race& r);
 	PlayerBoard(PlayerBoard& other);
 	~PlayerBoard();
 	
