@@ -1,7 +1,7 @@
 # Eclipsed
 
-CMake
-C++11-ish
+* CMake
+* C++11-ish
 
 ## Overall goals
 1. Game simulation 2-6 players
