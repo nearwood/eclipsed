@@ -13,7 +13,7 @@ JSON Game initial state
 
 ## TODO
 1. Assigning value to actions before a round ends (where actual VP might be earned) to distinguish good actions from bad ones. I'm guessing all actions are equal until the round ends.
-1. ~--All heap allocated stuff leaks, no deletes.--~
+1. ~~valgrind~~
 1. Limit players to one race from each side of player board
 1. Alpha–beta pruning -- going to need this as there are many really stupid moves in this game
 1. AI Players min/max, humanize to min/max +/- 10%, etc.
