@@ -4,6 +4,7 @@
 
 using namespace std;
 
+//TODO externalize this (might not be same between boards)
 std::map<byte, byte> PlayerBoard::actionCost = {{1, 0}, {2, 0}, {3, 1}, {4, 2}, {5, 3}, {6, 5}, {7, 7}, {8, 10}, {9, 13}, {10, 17}, {11, 21}, {12, 25}, {13, 30}};
 
 PlayerBoard::PlayerBoard(Race& r):
@@ -15,9 +16,10 @@ pass(false)
 	this->m = r.m;
 	this->s = r.s;
 	
+	//TODO externalize # of influence discs
 	for (int d = 1; d <= 13; ++d) //TODO add up to +3 later
 	{
-		inf.push_back(new Disc(this, nullptr));
+		inf.push_back(new Disc(this, 0));
 	}
 }
 
@@ -25,7 +27,8 @@ PlayerBoard::PlayerBoard(PlayerBoard& other):
 race(other.race),
 num(other.num),
 pass(other.pass),
-colonies(other.colonies),
+colonyShips(other.colonyShips),
+usedColonyShips(other.usedColonyShips),
 e(other.e),
 m(other.m),
 s(other.s),
@@ -33,14 +36,21 @@ name(other.name)
 {
 	for (Disc* d : other.inf)
 	{
-		//oops didn't think about how to do this
-		//Sector* s = other.getSector();
-		//find sector, link to it
-		//inf.push_back(new Disc(*d));
+		inf.push_back(new Disc(this, d->getSector(), d->isUsed()));
 	}
 	
 	//std::list<Disc*> infAvailable, infSpent;
 	//std::list<Ship*> deployedShips, unbuiltShips;
+}
+
+short int PlayerBoard::getRemainingActions()
+{
+	short int a = 0;
+	
+	for (auto it = inf.cbegin(); it != inf.cend(); ++it)
+		if ((*it)->isFree()) a++;
+		
+	return a;
 }
 
 Disc* PlayerBoard::getFreeInfluence()
@@ -51,11 +61,11 @@ Disc* PlayerBoard::getFreeInfluence()
 	return nullptr;
 }
 
-std::vector<Disc*> PlayerBoard::getPlacedInfluence()
+std::vector<Disc*> PlayerBoard::getPlacedInfluence() //should be plural
 {
 	std::vector<Disc*> pi;
 	for (auto it = inf.cbegin(); it != inf.cend(); ++it)
-		if (!(*it)->isFree()) pi.push_back(*it);
+		if ((*it)->isPlaced()) pi.push_back(*it);
 		
 	return pi;
 }
@@ -66,9 +76,18 @@ void PlayerBoard::placeInfluence(Sector* s)
 	Disc* d = getFreeInfluence();
 	if (d != nullptr)
 	{
-		cout << "Placing " << this->name << " influence disc on sector " << s->id << endl;
-		d->setSector(s);
+		//cout << "Placing " << this->name << " influence disc on sector " << s->id << endl;
+		d->setSector(s->id);
 	}
+}
+
+void PlayerBoard::roundCleanup()
+{
+	this->pass = false;
+	this->usedColonyShips = 0;
+	
+	for (auto it = inf.cbegin(); it != inf.cend(); ++it)
+		if ((*it)->isUsed()) (*it)->free();
 }
 
 byte PlayerBoard::getActionCost()
@@ -85,7 +104,7 @@ byte PlayerBoard::getActionCost()
 	return actionCost.at(spent);
 }
 
-short int PlayerBoard::getVP()
+short int PlayerBoard::getVP(Map* map)
 {
 	/*
 	•	Reputation Tiles (1–4 VP per tile)
@@ -117,7 +136,8 @@ short int PlayerBoard::getVP()
 	std::vector<Disc*> pi = this->getPlacedInfluence();
 	for (auto it = pi.cbegin(); it != pi.cend(); ++it)
 	{
-		Sector* loc = (*it)->getSector();
+		//TODO Uuuuugggh had to pull a map reference to this class just for this line
+		Sector* loc = map->getPlacedSectorById((*it)->getSector());
 		vp += loc->vp;
 	}
 	

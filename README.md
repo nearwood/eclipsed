@@ -6,15 +6,16 @@
 ## Overall goals
 1. Game simulation 2-6 players
 1. Gather statistics on best races, strategies for each race, etc.
+1. Waste CPU cycles.
 
 ## Data Model/Flow:
-JSON Races, Ships, etc.? Will better allow for add-ons
-JSON Game initial state
+* JSON Races, Ships, etc.? Will better allow for add-ons
+* JSON Game initial state
 
 ## TODO
 1. Assigning value to actions before a round ends (where actual VP might be earned) to distinguish good actions from bad ones. I'm guessing all actions are equal until the round ends.
 1. ~~valgrind~~
-1. Limit players to one race from each side of player board
+1. Option to limit players to one race from each side of player board
 1. Alpha–beta pruning -- going to need this as there are many really stupid moves in this game
 1. AI Players min/max, humanize to min/max +/- 10%, etc.
 1. Adjustable AI look-ahead
@@ -42,9 +43,11 @@ All possible player actions:
 * influence x number of colones for I influence
 * colonize 1-3 (decolonize as well)
 * form diplomacy with x players (as boards permit)
+* trade s/m/e to m/e;s/e;s/m
 
-1st approx. at 270,000,000 possible moves per action
-Looks like you aren't going to be able to simulate more than a few moves, space limited?
+1st approx. at 270,000,000 possible moves per player
+~200 bytes per state,  50GB plus some rising costs per player
+Looks like you aren't going to be able to simulate more than a few moves, space limited.
 
 ### each player can do actions:
 * build, upgrade, research, explore, move, influence, colonize, diplomacy

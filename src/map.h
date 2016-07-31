@@ -15,6 +15,7 @@ class Map
 	//need random access for random pick, and always < 50 elements
 	std::vector<Sector*> availableSectors, sectors;
 	Sector* gc;
+	std::vector<Sector*>::const_iterator getAvailableSectorIteratorById(short int id);
 	
 public:
 	Map();
@@ -27,18 +28,21 @@ public:
 	//void setSectors(sectormap s);
 	short int size();
 	
-	
 	std::vector<Sector*> getAllSectors(); //TODO should be ref
+	
+	Sector* getPlacedSectorById(short int id);
 	Sector* getAvailableSectorById(short int id);
 	std::vector<Sector*> getPotentialAdjacentSectors(Sector& s);
 	
 	Sector* getGalacticCenter() { return this->gc; }
+	
+	//TODO verify any Sector* argument exists in this map, or just use ID
 	void setGalacticCenter(Sector* s) { this->gc = s; }
 	std::vector<Sector*> getRingSectors(int ring);
 	
 	Sector* getRandomRingSector(int ring);
 	
-	void placeSector(Sector* s);
+	void placeSector(short int id);
 	
 	static int getRing(int q, int r, int s);
 	//static Sector* createEmptySector();

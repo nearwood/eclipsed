@@ -159,33 +159,62 @@ std::vector<Sector*> Map::getPotentialAdjacentSectors(Sector& s)
 	return pot;
 }
 
-void Map::placeSector(Sector* s) //TODO Orientation
+std::vector<Sector*>::const_iterator Map::getAvailableSectorIteratorById(short int id)
 {
-	//if (s->startSector) //place in ring 2
+	for (std::vector<Sector*>::const_iterator it = availableSectors.cbegin(); it != availableSectors.cend(); ++it)
+	{
+		if ((*it)->id == id)
+		{
+			return it;
+		}
+	}
+	
+	return availableSectors.cend();
+}
+
+Sector* Map::getPlacedSectorById(short int id)
+{
+	for (auto it = sectors.cbegin(); it != sectors.cend(); ++it)
+	{
+		if ((*it)->id == id)
+		{
+			return *it;
+		}
+	}
+	
+	return nullptr;
+}
+
+Sector* Map::getAvailableSectorById(short int id)
+{
 	for (auto it = availableSectors.cbegin(); it != availableSectors.cend(); ++it)
 	{
-		if ((*it)->id == s->id)
+		if ((*it)->id == id)
 		{
-			std::cout << "Placing sector at: (" << s->q << ", " << s->r << ", " << s->s << ")" << std::endl;
-			sectors.push_back(s);
-			//TODO link to other sectors
-			availableSectors.erase(it);
-			break;
+			return *it;
 		}
+	}
+	
+	return nullptr;
+}
+
+void Map::placeSector(short int id) //TODO Orientation
+{
+	//if (s->startSector) //place in ring 2
+	auto s = getAvailableSectorIteratorById(id);
+	
+	if (s != availableSectors.cend())
+	{
+		//std::cout << "Placing sector at: (" << (*s)->q << ", " << (*s)->r << ", " << (*s)->s << ")" << std::endl;
+		sectors.push_back(*s);
+		//TODO link to other sectors
+		availableSectors.erase(s);
 	}
 }
 
 std::vector<Sector*> Map::getAllSectors()
 {
 	return this->sectors;
-}
-
-Sector* Map::getAvailableSectorById(short int id)
-{//TODO first digit is ring
-	for (auto it = availableSectors.cbegin(); it != availableSectors.cend(); ++it)
-		if ((*it)->id == id) return (*it);
-		
-	return nullptr;
 }
 
 //Sector* Map::getGalacticCenter() { return this->gc; }

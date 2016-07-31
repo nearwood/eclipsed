@@ -102,7 +102,7 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	sector->q = 0;
 	sector->r = 0;
 	sector->s = 0;
-	gs->map->placeSector(sector);
+	gs->map->placeSector(sector->id);
 	gs->map->setGalacticCenter(sector); //TODO grumble...
 	//sector-> //TODO Setup GC defense, etc.
 	
@@ -163,8 +163,10 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 			sector->s = 2;
 			break;
 		}
-		gs->map->placeSector(sector);
+		gs->map->placeSector(sector->id);
 		pb->placeInfluence(sector);
+		pb->colonyShips = 3;
+		pb->usedColonyShips = 0;
 	}
 	
 	//Probably a better way but this is done once per game so who cares.
@@ -205,40 +207,58 @@ bool GameState::isGameOver()
 	return false;
 }
 
+//Need to fix bug with tie breaking, doesn't handle when score is tied between more than 2 players
 std::unordered_map<std::string, int> GameState::getScores()
 {
 	std::unordered_map<std::string, int> scores;
 	std::unordered_map<int, PlayerBoard*> ties;
 	
+	//cout << "Calculating scores..." << endl;
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
-	{
-		//Get VP
-		short int score = (*it)->getVP();
+	{//Get each players raw VP
+		int score = (*it)->getVP(this->map);
+		scores[(*it)->name] = score;
+		cout << (*it)->name << ": " << score << endl;
 		
-		//Determine if anyone else has that VP
+		//Check if we are tied to anyone else
 		auto found = ties.find(score);
 		if (found == ties.cend())
-		{//if not make note for future passes
-			scores[(*it)->name] =  score;
+		{//if so, make note for next loop
 			ties.insert({ score, (*it) });
-			cout << "notie: " << (*it)->name << ": " << score << endl;
+			//cout << "notie: " << (*it)->name << ": " << score << endl;
+		}
+	}
+	
+	for (auto it = players.cbegin(); it != players.cend(); ++it)
+	{//Find any ties
+		int score = scores[(*it)->name];
+		
+		auto found = ties.find(score);
+		if (found == ties.cend())
+		{//no tie, so this is final score
+			scores[(*it)->name] = score;
+			cout << (*it)->name << ": " << score << endl;
 		}
 		else
 		{//Tie with another player, add E, M, S to score
+			//This adjusted score is just to settle ties between the tied players, otherwise untied players are at a disadvantage
 			//For clarity, this should ideally be separate from VP, but we will just add it to the VP for now
 			
 			//insert tied with player score
 			PlayerBoard* pb = found->second;
-			short int score2 = pb->getVP();
-			score2 += pb->e + pb->m + pb->s;
-			scores[pb->name] = score2;
-			
-			//insert this player's score
-			score += (*it)->e + (*it)->m + (*it)->s;
-			scores[(*it)->name] =  score;
-			cout << "tie: " << (*it)->name << ": " << score << endl;
-			cout << "tie: " << pb->name << ": " << score2 << endl;
-			//And if it's still a tie at this point, tough.
+			if (pb != (*it))
+			{
+				short int score2 = pb->getVP(this->map);
+				//score2 += pb->e + pb->m + pb->s;
+				//scores[pb->name] = score2;
+				
+				//insert this player's score
+				//score += (*it)->e + (*it)->m + (*it)->s;
+				//scores[(*it)->name] = score;
+				cout << "tie: " << (*it)->name << ": " << score << " + " << (*it)->e + (*it)->m + (*it)->s << endl;
+				cout << "tie: " << pb->name << ": " << score2 << " + " << pb->e + pb->m + pb->s << endl;
+				//And if it's still a tie at this point, tough.
+			}
 		}
 		
 		//should probably use ordered map/sort and find dupes that way
@@ -323,22 +343,20 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	//when everyone passes combat phase
 	//combat is random
 	
-	PlayerBoard *currentBoard = parent.getCurrentPlayer();
+	PlayerBoard* currentBoard = parent.getCurrentPlayer();
 	
 	std::list<GameState*> children;
 	
 	//TODO assert childBoard != nullptr
 	if (!currentBoard->pass)
 	{
-		cout << "Playing as: " << currentBoard->name << endl;
+		cout << "Playing as: " << currentBoard->name << " [" << (int)currentBoard->e << ", " << (int)currentBoard->m << ", " << (int)currentBoard->s << "]" << endl;
 		
-		//cout << "Pass" << endl; //TODO state->Pass()
+		cout << "+PASS" << endl;
 		GameState* childState = new GameState(parent); //TODO Shouldn't we use parent first? Or parent is already 'done'?
 		PlayerBoard *childBoard = childState->getCurrentPlayer();
 		
 		//try passing if we haven't already
-		//bool firstPass = childBoard->pass();
-		
 		childBoard->pass = true;
 		
 		//check if first pass
@@ -356,6 +374,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		
 		if (firstPass)
 		{//If first pass set next round's first player.
+			//cout << "Setting first player token" << endl;
 			childState->lastFirstPlayer = childState->firstPlayer;
 			childState->firstPlayer = childBoard->name;
 		}
@@ -370,51 +389,58 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		Disc* d = currentBoard->getFreeInfluence(); //just need to check, no need to get
 		if (d != nullptr)
 		{
-			//Explore
+			//EXPLORE
+			//Find out sectors where we have influence discs placed
 			std::vector<Disc*> placedInf = currentBoard->getPlacedInfluence();
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
-			{//For each placed influence //TODO Also for any unpinned ships
-				Sector* sectorA = (*it)->getSector();
+			{//For each placed influence //TODO Also for any 'unpinned' ships
+				Sector* sectorA = parent.map->getPlacedSectorById((*it)->getSector());
 				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
 				
 				for (Sector* s : adjacentSectors)
-				{//For all 'empty' sector positions around the placed influence
-					if (s == nullptr) continue;
+				{//For all 'empty' sector positions around the sector with a placed influence disc
+					if (s == nullptr) continue; //Why would it be null?
 					
 					GameState* cs = new GameState(parent);
 					Sector* newSector = cs->map->getAvailableSectorById(s->id);
 					PlayerBoard* cb = cs->getCurrentPlayer();
-					
-					cs->map->placeSector(newSector); //TODO Need to copy sector to other gamestate
-					
-					PlayerBoard *nextPlayer = cs->getNextPlayer();
-					cs->currentPlayer = nextPlayer->name;
-					children.push_back(cs);
-
-					//optionally, place influence and flip colonize token
-					cs = new GameState(parent);
-					cb = cs->getCurrentPlayer();
 					Disc* freeInf = cb->getFreeInfluence();
-					if (freeInf != nullptr) //TODO Check this first before init sector
-					{//TODO Might be redundant since we check parent
-						newSector = cs->map->getAvailableSectorById(s->id); //ugh
-						cs->map->placeSector(newSector);
-						freeInf->setSector(newSector);
+					
+					if (freeInf != nullptr)
+					{
+						cs->map->placeSector(newSector->id);
 						PlayerBoard *nextPlayer = cs->getNextPlayer();
 						cs->currentPlayer = nextPlayer->name;
+						freeInf->use();
+						cout << "+EXPLORE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
 						children.push_back(cs);
-					}
-					else
-					{//delete state, we didn't need to create it
-						delete cs; //TODO delete entire composition thru dtr
+						
+						//optionally, place influence and flip colonize token
+						cs = new GameState(parent);
+						cb = cs->getCurrentPlayer();
+						Disc* freeInf = cb->getFreeInfluence();
+						//If we have free influence and an unused colony ship left
+						if (freeInf != nullptr && cb->usedColonyShips < cb->colonyShips)
+						{//TODO Might be redundant since we check parent
+							newSector = cs->map->getAvailableSectorById(s->id); //ugh
+							cs->map->placeSector(newSector->id);
+							freeInf->setSector(newSector->id);
+							cb->usedColonyShips++;
+							cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
+							PlayerBoard *nextPlayer = cs->getNextPlayer();
+							cs->currentPlayer = nextPlayer->name;
+							children.push_back(cs);
+						}
+						else
+						{//delete state, we didn't need to create it
+							delete cs; //TODO delete entire composition thru dtr
+						}
 					}
 				}
 			}
+			
+			//TODO any other actions for this free influence
 		}
-
-		//TODO for each free influence...
-
-
 	}
 	else
 	{
@@ -423,10 +449,10 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			//cout << "All players pass." << endl;
 			//TODO Do all phases here.
 			
-			cout << "COMBAT PHASE" << endl;
+			//cout << "COMBAT PHASE" << endl;
 			//COMBAT do all potential combat from all potential actions (using averages?) (starting from sectors numbers IIRC)
 			
-			cout << "UPKEEP PHASE" << endl;
+			//cout << "UPKEEP PHASE" << endl;
 			//UPKEEP e,m,s balancing
 			
 			for (PlayerBoard* l : parent.players)
@@ -442,7 +468,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					{//cost is ok this turn
 						GameState* cs = new GameState(parent);
 						PlayerBoard* p = cs->getPlayer(l->name);
-						cout << l->name << " trading down m, s" << endl;
+						//cout << "+TRADE: trading down m, s" << endl;
 						p->m = p->s = 0;
 						p->e += extra - c;
 						cs->roundCleanup();
@@ -450,14 +476,15 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					}
 					else
 					{//trading isn't enough
-						GameState* cs = new GameState(parent);
-						PlayerBoard* p = cs->getPlayer(l->name);
+						//GameState* cs = new GameState(parent);
+						cout << "+RAZE: Not implemented" << endl;
+						//PlayerBoard* p = cs->getPlayer(l->name);
 						
-						//TODO raze discs
+						//TODO raze discs, and if that's not enough, player is out of game
 
 						//cout << l->name << " bankrupt. Razing colonies?" << endl;
-						cs->roundCleanup();
-						children.push_back(cs);
+						//cs->roundCleanup();
+						//children.push_back(cs);
 					}
 				}
 				else
@@ -465,6 +492,9 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					GameState* cs = new GameState(parent);
 					PlayerBoard* p = cs->getPlayer(l->name);
 					p->e -= c;
+					cout << "+CLEANUP" << endl;
+					cs->roundCleanup();
+					children.push_back(cs);
 					//cout << p->name << " upkeep is " << (int)c << ", leaving " << (int)p->e << endl;
 				}
 
@@ -479,20 +509,19 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		}
 	}
 	
-	cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
+	//cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
 	return children;
 }
 
 void GameState::roundCleanup()
 {
-	cout << "CLEANUP PHASE" << endl;
+	//cout << "CLEANUP PHASE" << endl;
 	//go to next round if there is one
 	this->round++;
 	for (PlayerBoard* l : this->players)
 	{
-		l->pass = false;
+		l->roundCleanup();
 		//do whatever else resets here.
-		//reset settler ships
 	}
 }
 

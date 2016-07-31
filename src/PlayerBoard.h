@@ -4,6 +4,7 @@ class PlayerBoard;
 
 #include "ship.h"
 #include "race.h"
+#include "map.h"
 
 #include <vector>
 #include <string>
@@ -19,6 +20,7 @@ typedef unsigned char byte;
 //2n-2, 2n-3, 2n-4 2n-5 2n-5 2n-5 2n-4 2n-3 2n-1 2n+1 2n+3 2n+6
 //ugh just use a map...
 
+class Map;
 class InfluenceDisc;
 typedef InfluenceDisc Disc;
 
@@ -34,7 +36,7 @@ public:
 	Race& race; //TODO should be const, no easy way
 	byte num; //play order
 	bool pass;
-	short int colonies;
+	short int colonyShips, usedColonyShips;
 	
 	char e, m, s; //economy, minerals, science
 	byte moves, builds, upgrades; //num builds, upgrades, moves used out of total
@@ -47,10 +49,13 @@ public:
 	PlayerBoard(PlayerBoard& other);
 	~PlayerBoard();
 	
+	short int getRemainingActions();
 	Disc* getFreeInfluence();
 	std::vector<Disc*> getPlacedInfluence();
 	void placeInfluence(Sector* s);
 	byte getActionCost();
 	
-	short int getVP();
+	void roundCleanup();
+	
+	short int getVP(Map* map);
 };

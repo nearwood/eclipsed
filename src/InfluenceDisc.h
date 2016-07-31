@@ -1,31 +1,45 @@
 #pragma once
 
 #include "PlayerBoard.h"
-#include "sector.h"
 
 class InfluenceDisc
 {
 	PlayerBoard* owner;
-	Sector* location;
+	short int sectorId;
+	bool used;
 	
 public:
-	InfluenceDisc(PlayerBoard* pb, Sector* s)
+	
+	
+	InfluenceDisc(PlayerBoard* pb, short int sectorId, bool used)
 	{
 		owner = pb;
-		location = s;
+		this->sectorId = sectorId;
+		this->used = used;
+	}
+
+	InfluenceDisc(PlayerBoard* pb, short int sectorId)
+	{//ctr called at game setup
+		owner = pb;
+		this->sectorId = sectorId;
+		used = false;
 	}
 	
-	void setSector(Sector* s)
+	void setSector(short int id)
 	{
-		location = s;
+		sectorId = id;
 	}
 	
-	Sector* getSector()
+	short int getSector()
 	{//what's the point of it being private now...
-		return location;
+		return sectorId;
 	}
 	
-	bool isFree() { return location == nullptr; }
+	void free() { used = false; } //if (sectorId = 0) used = false; }
+	bool isUsed() { return used; }
+	void use() { used = true; } //TODO check if already used and throw
+	bool isFree() { return sectorId == 0 && !used; }
+	bool isPlaced() { return sectorId != 0 && !used; }
 };
 
 typedef InfluenceDisc Disc;
