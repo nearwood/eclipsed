@@ -207,7 +207,7 @@ bool GameState::isGameOver()
 	return false;
 }
 
-//Need to fix bug with tie breaking, doesn't handle when score is tied between more than 2 players
+//TODO Need to fix bug with tie breaking, doesn't handle when score is tied between more than 2 players
 std::unordered_map<std::string, int> GameState::getScores()
 {
 	std::unordered_map<std::string, int> scores;
@@ -220,10 +220,11 @@ std::unordered_map<std::string, int> GameState::getScores()
 		scores[(*it)->name] = score;
 		cout << (*it)->name << ": " << score << endl;
 		
+		//TODO below check might be wrong, need to think through >2 players with same score
 		//Check if we are tied to anyone else
 		auto found = ties.find(score);
 		if (found == ties.cend())
-		{//if so, make note for next loop
+		{//if not, insert this for comparison later
 			ties.insert({ score, (*it) });
 			//cout << "notie: " << (*it)->name << ": " << score << endl;
 		}
@@ -390,6 +391,9 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		if (d != nullptr)
 		{
 			//EXPLORE
+			//To explore, a player can place sectors next to any sectors with unpinned ships, or sectors with their influence placed.
+			//Also, TODO find out and implement if the player can select 3 random tiles and place 1 or is that another board game?
+			
 			//Find out sectors where we have influence discs placed
 			std::vector<Disc*> placedInf = currentBoard->getPlacedInfluence();
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
@@ -425,7 +429,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 							newSector = cs->map->getAvailableSectorById(s->id); //ugh
 							cs->map->placeSector(newSector->id);
 							freeInf->setSector(newSector->id);
-							cb->usedColonyShips++;
+							cb->usedColonyShips++; //"flip" colony ship or whatever that thing is
 							cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
 							PlayerBoard *nextPlayer = cs->getNextPlayer();
 							cs->currentPlayer = nextPlayer->name;

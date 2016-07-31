@@ -63,6 +63,6 @@ void Game::turn()
 }
 
 Game::~Game()
-{//TODO startState->map is getting deleted earlier
+{//TODO find out how startState->map is getting deleted earlier
 	//delete startState;
 }
