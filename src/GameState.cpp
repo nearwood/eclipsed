@@ -218,7 +218,7 @@ std::unordered_map<std::string, int> GameState::getScores()
 	{//Get each players raw VP
 		int score = (*it)->getVP(this->map);
 		scores[(*it)->name] = score;
-		cout << (*it)->name << ": " << score << endl;
+		//cout << (*it)->name << ": " << score << endl;
 		
 		//TODO below check might be wrong, need to think through >2 players with same score
 		//Check if we are tied to anyone else
@@ -238,7 +238,7 @@ std::unordered_map<std::string, int> GameState::getScores()
 		if (found == ties.cend())
 		{//no tie, so this is final score
 			scores[(*it)->name] = score;
-			cout << (*it)->name << ": " << score << endl;
+			//cout << (*it)->name << ": " << score << endl;
 		}
 		else
 		{//Tie with another player, add E, M, S to score
@@ -256,8 +256,8 @@ std::unordered_map<std::string, int> GameState::getScores()
 				//insert this player's score
 				//score += (*it)->e + (*it)->m + (*it)->s;
 				//scores[(*it)->name] = score;
-				cout << "tie: " << (*it)->name << ": " << score << " + " << (*it)->e + (*it)->m + (*it)->s << endl;
-				cout << "tie: " << pb->name << ": " << score2 << " + " << pb->e + pb->m + pb->s << endl;
+				//cout << "tie: " << (*it)->name << ": " << score << " + " << (*it)->e + (*it)->m + (*it)->s << endl;
+				//cout << "tie: " << pb->name << ": " << score2 << " + " << pb->e + pb->m + pb->s << endl;
 				//And if it's still a tie at this point, tough.
 			}
 		}
@@ -351,9 +351,9 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	//TODO assert childBoard != nullptr
 	if (!currentBoard->pass)
 	{
-		cout << "Playing as: " << currentBoard->name << " [" << (int)currentBoard->e << ", " << (int)currentBoard->m << ", " << (int)currentBoard->s << "]" << endl;
+		//cout << "Playing as: " << currentBoard->name << " [" << (int)currentBoard->e << ", " << (int)currentBoard->m << ", " << (int)currentBoard->s << "]" << endl;
 		
-		cout << "+PASS" << endl;
+		//cout << "+PASS" << endl;
 		GameState* childState = new GameState(parent); //TODO Shouldn't we use parent first? Or parent is already 'done'?
 		PlayerBoard *childBoard = childState->getCurrentPlayer();
 		
@@ -405,32 +405,33 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 				{//For all 'empty' sector positions around the sector with a placed influence disc
 					if (s == nullptr) continue; //Why would it be null?
 					
+					//cout << "+EXPLORE: " << endl; //<< newSector << " free influence: " << cb->getRemainingActions() << endl;
+					//Place sector without placing influence
 					GameState* cs = new GameState(parent);
 					Sector* newSector = cs->map->getAvailableSectorById(s->id);
 					PlayerBoard* cb = cs->getCurrentPlayer();
 					Disc* freeInf = cb->getFreeInfluence();
+					freeInf->use();
+					cs->map->placeSector(newSector->id);
+					PlayerBoard *nextPlayer = cs->getNextPlayer();
+					cs->currentPlayer = nextPlayer->name;
+					children.push_back(cs);
 					
+					//Here we use the childBoard to check if there's an *additional* influence token available
+					freeInf = cb->getFreeInfluence();
 					if (freeInf != nullptr)
 					{
-						cs->map->placeSector(newSector->id);
-						PlayerBoard *nextPlayer = cs->getNextPlayer();
-						cs->currentPlayer = nextPlayer->name;
-						freeInf->use();
-						cout << "+EXPLORE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
-						children.push_back(cs);
-						
-						//optionally, place influence and flip colonize token
-						cs = new GameState(parent);
+						//Place influence and flip colonize token
+						cs = new GameState(*cs); //Note this is on a copy of the previous child state, not parent.
 						cb = cs->getCurrentPlayer();
-						Disc* freeInf = cb->getFreeInfluence();
+						freeInf = cb->getFreeInfluence(); //Reassign influence from this new state
 						//If we have free influence and an unused colony ship left
 						if (freeInf != nullptr && cb->usedColonyShips < cb->colonyShips)
 						{//TODO Might be redundant since we check parent
-							newSector = cs->map->getAvailableSectorById(s->id); //ugh
-							cs->map->placeSector(newSector->id);
+							newSector = cs->map->getPlacedSectorById(s->id);
 							freeInf->setSector(newSector->id);
 							cb->usedColonyShips++; //"flip" colony ship or whatever that thing is
-							cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
+							//cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
 							PlayerBoard *nextPlayer = cs->getNextPlayer();
 							cs->currentPlayer = nextPlayer->name;
 							children.push_back(cs);
@@ -480,15 +481,15 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					}
 					else
 					{//trading isn't enough
-						//GameState* cs = new GameState(parent);
-						cout << "+RAZE: Not implemented" << endl;
+						GameState* cs = new GameState(parent);
+						//cout << "+RAZE: Not implemented" << endl;
 						//PlayerBoard* p = cs->getPlayer(l->name);
 						
 						//TODO raze discs, and if that's not enough, player is out of game
 
 						//cout << l->name << " bankrupt. Razing colonies?" << endl;
-						//cs->roundCleanup();
-						//children.push_back(cs);
+						cs->roundCleanup();
+						children.push_back(cs);
 					}
 				}
 				else
@@ -496,7 +497,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					GameState* cs = new GameState(parent);
 					PlayerBoard* p = cs->getPlayer(l->name);
 					p->e -= c;
-					cout << "+CLEANUP" << endl;
+					//cout << "+CLEANUP" << endl;
 					cs->roundCleanup();
 					children.push_back(cs);
 					//cout << p->name << " upkeep is " << (int)c << ", leaving " << (int)p->e << endl;
@@ -507,7 +508,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			}
 		}
 		else
-		{
+		{//This player has passed but not all players have
 			//reactions
 			//build, upgrade, move
 		}

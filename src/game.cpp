@@ -25,11 +25,11 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 {
 	static int count = 0;
 	
-	/*if (++count % 1000 == 0)*/ cout << "Round: " << s->round << ", Depth: " << depth << ", Play: " << ++count << endl;
-	//cout << "p" << (int)p->num << "r" << s->round << "d" << depth << "p" << ++count << " -- ";
-	
 	if (s->isGameOver())// || count >= 20)
 		return s->getScores();
+		
+	if (++count % 10000 == 0) cout << "Round: " << s->round << ", Depth: " << depth << ", Play: " << count << endl;
+	//cout << "p" << (int)p->num << "r" << s->round << "d" << depth << "p" << ++count << " -- ";
 	
 	PlayerBoard *cp = s->getCurrentPlayer();
 	std::unordered_map<std::string, int> scores;
