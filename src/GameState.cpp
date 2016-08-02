@@ -405,29 +405,30 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 				{//For all 'empty' sector positions around the sector with a placed influence disc
 					if (s == nullptr) continue; //Why would it be null?
 					
+					//cout << "+EXPLORE: " << endl; //<< newSector << " free influence: " << cb->getRemainingActions() << endl;
+					//Place sector without placing influence
 					GameState* cs = new GameState(parent);
 					Sector* newSector = cs->map->getAvailableSectorById(s->id);
 					PlayerBoard* cb = cs->getCurrentPlayer();
 					Disc* freeInf = cb->getFreeInfluence();
+					freeInf->use();
+					cs->map->placeSector(newSector->id);
+					PlayerBoard *nextPlayer = cs->getNextPlayer();
+					cs->currentPlayer = nextPlayer->name;
+					children.push_back(cs);
 					
+					//Here we use the childBoard to check if there's an *additional* influence token available
+					freeInf = cb->getFreeInfluence();
 					if (freeInf != nullptr)
 					{
-						cs->map->placeSector(newSector->id);
-						PlayerBoard *nextPlayer = cs->getNextPlayer();
-						cs->currentPlayer = nextPlayer->name;
-						freeInf->use();
-						//cout << "+EXPLORE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
-						children.push_back(cs);
-						
-						//optionally, place influence and flip colonize token
-						cs = new GameState(parent);
+						//Place influence and flip colonize token
+						cs = new GameState(*cs); //Note this is on a copy of the previous child state, not parent.
 						cb = cs->getCurrentPlayer();
-						Disc* freeInf = cb->getFreeInfluence();
+						freeInf = cb->getFreeInfluence(); //Reassign influence from this new state
 						//If we have free influence and an unused colony ship left
 						if (freeInf != nullptr && cb->usedColonyShips < cb->colonyShips)
 						{//TODO Might be redundant since we check parent
-							newSector = cs->map->getAvailableSectorById(s->id); //ugh
-							cs->map->placeSector(newSector->id);
+							newSector = cs->map->getPlacedSectorById(s->id);
 							freeInf->setSector(newSector->id);
 							cb->usedColonyShips++; //"flip" colony ship or whatever that thing is
 							//cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
@@ -507,7 +508,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			}
 		}
 		else
-		{
+		{//This player has passed but not all players have
 			//reactions
 			//build, upgrade, move
 		}

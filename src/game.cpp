@@ -27,7 +27,7 @@ std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 	
 	if (s->isGameOver())// || count >= 20)
 		return s->getScores();
-		
+	
 	if (++count % 100000 == 0) 
 		cout << "Round: " << s->round << ", Depth: " << depth << ", Play: " << count << endl;
 	//cout << "p" << (int)p->num << "r" << s->round << "d" << depth << "p" << ++count << " -- ";
