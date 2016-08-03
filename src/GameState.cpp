@@ -399,7 +399,10 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
 			{//For each placed influence //TODO Also for any 'unpinned' ships
 				Sector* sectorA = parent.map->getPlacedSectorById((*it)->getSector());
-				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA);
+				
+				//TODO Branch to one child for each (available) ring
+				int r = rand() % 3 + 1;
+				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA, r);
 				
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the sector with a placed influence disc

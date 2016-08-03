@@ -91,26 +91,46 @@ short int Map::size()
 	return sectors.size(); //ideally this should be the filled graph size, not just what was loaded.
 }
 
+int Map::getAdjacentRings(Sector& s)
+{
+	//Possibilities:
+	//0,1,2
+	//1,2,3
+	//2,3(,3)
+	int r = (s.q, s.r, s.s);
+	switch (r)
+	{//just adds up value of adjacent rings
+		case 0: return 1;
+		case 1: return 6;
+		case 2: return 8;
+		default: return 0;//TODO throw
+		break;
+	}
+	
+}
+
 //Get a list of available sectors, one for each free location around s
-std::vector<Sector*> Map::getPotentialAdjacentSectors(Sector& s)
-{//TODO Randomly pick sector from each ring that is in or adjacent to s
+std::vector<Sector*> Map::getPotentialAdjacentSectors(Sector& s, int ring)
+{
 	//Note that any index pointer could be null if the available sectors for that ring are empty
 	std::vector<Sector*> pot;
-	int ring[6];
+	int aring[6]; //adjacent sectors' rings
 	Sector* a;
 	
-	ring[0] = Map::getRing(s.q + 1, s.r, s.s);
-	ring[1] = Map::getRing(s.q, s.r + 1, s.s);
-	ring[2] = Map::getRing(s.q, s.r, s.s + 1);
-	ring[3] = Map::getRing(s.q - 1, s.r, s.s);
-	ring[4] = Map::getRing(s.q, s.r - 1, s.s);
-	ring[5] = Map::getRing(s.q, s.r, s.s - 1);
+	aring[0] = Map::getRing(s.q + 1, s.r, s.s);
+	aring[1] = Map::getRing(s.q, s.r + 1, s.s);
+	aring[2] = Map::getRing(s.q, s.r, s.s + 1);
+	aring[3] = Map::getRing(s.q - 1, s.r, s.s);
+	aring[4] = Map::getRing(s.q, s.r - 1, s.s);
+	aring[5] = Map::getRing(s.q, s.r, s.s - 1);
 	
 	for (int i = 0; i < 6; ++i)
 	{
-		if (ring[i] > 3) ring[i] = 3;
+		if (aring[i] > 3) aring[i] = 3; //TODO Why would this ever be the case?
 		
-		switch (ring[i])
+		if (aring[i] != ring) continue;
+		
+		switch (aring[i])
 		{
 			case 1:
 			a = getRandomRingSector(1);

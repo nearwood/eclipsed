@@ -29,10 +29,10 @@ public:
 	short int size();
 	
 	std::vector<Sector*> getAllSectors(); //TODO should be ref
-	
+	int getAdjacentRings(Sector& s);
 	Sector* getPlacedSectorById(short int id);
 	Sector* getAvailableSectorById(short int id);
-	std::vector<Sector*> getPotentialAdjacentSectors(Sector& s);
+	std::vector<Sector*> getPotentialAdjacentSectors(Sector& s, int ring);
 	
 	Sector* getGalacticCenter() { return this->gc; }
 	
