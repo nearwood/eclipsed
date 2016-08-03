@@ -410,7 +410,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					GameState* cs = new GameState(parent);
 					Sector* newSector = cs->map->getAvailableSectorById(s->id);
 					PlayerBoard* cb = cs->getCurrentPlayer();
-					Disc* freeInf = cb->getFreeInfluence();
+					Disc* freeInf = cb->getFreeInfluence(); //This won't be null since parent had one free
 					freeInf->use();
 					cs->map->placeSector(newSector->id);
 					PlayerBoard *nextPlayer = cs->getNextPlayer();
@@ -477,6 +477,8 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 						p->m = p->s = 0;
 						p->e += extra - c;
 						cs->roundCleanup();
+						PlayerBoard *nextPlayer = cs->getNextPlayer();
+						cs->currentPlayer = nextPlayer->name;
 						children.push_back(cs);
 					}
 					else
@@ -489,6 +491,8 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 
 						//cout << l->name << " bankrupt. Razing colonies?" << endl;
 						cs->roundCleanup();
+						PlayerBoard *nextPlayer = cs->getNextPlayer();
+						cs->currentPlayer = nextPlayer->name;
 						children.push_back(cs);
 					}
 				}
@@ -499,6 +503,8 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					p->e -= c;
 					//cout << "+CLEANUP" << endl;
 					cs->roundCleanup();
+					PlayerBoard *nextPlayer = cs->getNextPlayer();
+					cs->currentPlayer = nextPlayer->name;
 					children.push_back(cs);
 					//cout << p->name << " upkeep is " << (int)c << ", leaving " << (int)p->e << endl;
 				}

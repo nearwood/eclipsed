@@ -19,7 +19,9 @@
 1. Alpha–beta pruning -- going to need this as there are many really stupid moves in this game
 1. AI Players min/max, humanize to min/max +/- 10%, etc.
 1. Adjustable AI look-ahead
-1. Giant hashmap of gamestates to avoid dupes? (Dynamic programming)
+1. Giant hashmap of gamestates to avoid dupes? (Dynamic programming) This seems unfeasible
+1. Option for thread per player to simulate different each player being first
+1. Variable cout based on CPU speed? (every 100,000 plays vs 250,000 plays vs 1,000,000 plays, etc.)
 
 ## Notes
 * Mitigating Horizon Effect? What are important moves? System capture, player death, etc.?

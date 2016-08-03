@@ -23,13 +23,17 @@ void Game::play()
 //maxn
 std::unordered_map<std::string, int> Game::play(GameState* s, uint depth)
 {
-	static int count = 0;
+	static int count = 0;//, gameCount = 0;
 	
-	if (s->isGameOver())// || count >= 20)
+	if (s->isGameOver())
+	{
+		//++gameCount;
 		return s->getScores();
+	}
 	
-	if (++count % 100000 == 0) 
+	if (++count % 250000 == 0) 
 		cout << "Round: " << s->round << ", Depth: " << depth << ", Play: " << count << endl;
+		//cout << "Round: " << s->round << ", Depth: " << depth << ", Play: " << count << ", Game: " << gameCount << endl;
 	//cout << "p" << (int)p->num << "r" << s->round << "d" << depth << "p" << ++count << " -- ";
 	
 	PlayerBoard *cp = s->getCurrentPlayer();

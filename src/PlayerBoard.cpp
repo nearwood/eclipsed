@@ -97,9 +97,9 @@ byte PlayerBoard::getActionCost()
 		if (!(*it)->isFree()) spent++;
 		
 	//TODO will want to revisit this
-	short int excess = inf.size() - 13;
-	spent -= excess;
-	if (spent < 0) spent = 0;
+	//short int excess = 13 - inf.size();
+	//spent -= excess;
+	//if (spent < 0) spent = 0;
 	
 	return actionCost.at(spent);
 }
