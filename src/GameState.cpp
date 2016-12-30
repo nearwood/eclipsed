@@ -351,9 +351,9 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	//TODO assert childBoard != nullptr
 	if (!currentBoard->pass)
 	{
-		//cout << "Playing as: " << currentBoard->name << " [" << (int)currentBoard->e << ", " << (int)currentBoard->m << ", " << (int)currentBoard->s << "]" << endl;
+		cout << "Playing as: " << currentBoard->name << " [" << (int)currentBoard->e << ", " << (int)currentBoard->m << ", " << (int)currentBoard->s << "]" << endl;
 		
-		//cout << "+PASS" << endl;
+		cout << "+PASS" << endl;
 		GameState* childState = new GameState(parent); //TODO Shouldn't we use parent first? Or parent is already 'done'?
 		PlayerBoard *childBoard = childState->getCurrentPlayer();
 		
@@ -396,6 +396,8 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			
 			//Find out sectors where we have influence discs placed
 			std::vector<Disc*> placedInf = currentBoard->getPlacedInfluence();
+			cout << "Checking placed influence: " << placedInf.size() << endl;
+			
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
 			{//For each placed influence //TODO Also for any 'unpinned' ships
 				Sector* sectorA = parent.map->getPlacedSectorById((*it)->getSector());
@@ -403,12 +405,13 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 				//TODO Branch to one child for each (available) ring
 				int r = rand() % 3 + 1;
 				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA, r);
+				cout << " ^- adjacent sectors: " << adjacentSectors.size() << endl; 
 				
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the sector with a placed influence disc
 					if (s == nullptr) continue; //Why would it be null?
 					
-					//cout << "+EXPLORE: " << endl; //<< newSector << " free influence: " << cb->getRemainingActions() << endl;
+					cout << "+EXPLORE: " << endl; //<< newSector << " free influence: " << cb->getRemainingActions() << endl;
 					//Place sector without placing influence
 					GameState* cs = new GameState(parent);
 					Sector* newSector = cs->map->getAvailableSectorById(s->id);
@@ -416,6 +419,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					Disc* freeInf = cb->getFreeInfluence(); //This won't be null since parent had one free
 					freeInf->use();
 					cs->map->placeSector(newSector->id);
+					
 					PlayerBoard *nextPlayer = cs->getNextPlayer();
 					cs->currentPlayer = nextPlayer->name;
 					children.push_back(cs);
@@ -434,7 +438,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 							newSector = cs->map->getPlacedSectorById(s->id);
 							freeInf->setSector(newSector->id);
 							cb->usedColonyShips++; //"flip" colony ship or whatever that thing is
-							//cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
+							cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
 							PlayerBoard *nextPlayer = cs->getNextPlayer();
 							cs->currentPlayer = nextPlayer->name;
 							children.push_back(cs);
@@ -454,7 +458,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	{
 		if (parent.allPlayersPass())
 		{//If last pass, end the round
-			//cout << "All players pass." << endl;
+			cout << "All players pass. Round " << parent.round << " over." << endl;
 			//TODO Do all phases here.
 			
 			//cout << "COMBAT PHASE" << endl;
@@ -523,7 +527,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		}
 	}
 	
-	//cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
+	cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
 	return children;
 }
 

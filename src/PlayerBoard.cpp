@@ -121,14 +121,13 @@ short int PlayerBoard::getVP(Map* map)
 	two player game
 	The two player game is strategically slightly different from
 	the multiplayer game. Players should also be advised that
-	the Descendants and Planta benefit from their species-spe­
-	cific fast expansion capabilities and are thus stronger than
+	the Descendants and Planta benefit from their species-spe­cific
+	fast expansion capabilities and are thus stronger than
 	other species in a two-player setting. It is recommended
 	not to use these species in a two player game.
 	
-	In case of a tie, the total amount of Resources (Money,
-	Science and Materials) in each tied player’s Storage is the
-	tie breaker.
+	In case of a tie, the total amount of Resources (Money, Science
+	and Materials) in each tied player’s Storage is the tie breaker.
 	*/
 	
 	//Hexes with an influence disc
