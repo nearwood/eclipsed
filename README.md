@@ -61,10 +61,11 @@ Looks like you aren't going to be able to simulate more than a few moves, space 
 * pass, then do limited reactions (upgrade, build, move)
 
 ## Plan of Attack
-1. Do nothing and pass
-1. Upkeep
-1. Colonize home system, do upkeep (no vp)
-1. Explore action, choose sector (ship/disc adjacent), choose location, and orientation (wormholes must align) tiles (no vp)
+1. Do nothing and pass ✔
+1. Upkeep ✔
+1. Colonize home system, do upkeep (no vp) ✔
+1. Explore action, choose sector (ship/disc adjacent), choose location, ✔ (runs too long; possibly forever)
+1. ^- and orientation (wormholes must align) tiles (no vp)
 1. Colonize non-combat discovered sectors (first vp)
 1. Build ships/orbitals/monoliths
 1. Combat (huge)

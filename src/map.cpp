@@ -97,7 +97,7 @@ int Map::getAdjacentRings(Sector& s)
 	//0,1,2
 	//1,2,3
 	//2,3(,3)
-	int r = (s.q, s.r, s.s);
+	int r = this->getRing(s.q, s.r, s.s);
 	switch (r)
 	{//just adds up value of adjacent rings
 		case 0: return 1;
