@@ -17,7 +17,7 @@ pass(false)
 	this->s = r.s;
 	
 	//TODO externalize # of influence discs
-	for (int d = 1; d <= 13; ++d) //TODO add up to +3 later
+	for (int d = 1; d <= 6; ++d) //13, TODO add up to +3 later
 	{
 		inf.push_back(new Disc(this, 0));
 	}

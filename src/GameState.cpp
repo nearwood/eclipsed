@@ -18,7 +18,9 @@ GameState::GameState(GameState& other)
 :currentPlayer(other.currentPlayer),
 firstPlayer(other.firstPlayer),
 lastFirstPlayer(other.lastFirstPlayer),
-round(other.round)
+round(other.round),
+depth(other.depth + 1),
+numChildren(0)
 {
 	map = new Map(*(other.map));
 	
@@ -44,6 +46,9 @@ GameState* GameState::fromJson(Json::Value& races, Json::Value& sectors, Json::V
 	GameState* gs = new GameState();
 	
 	gs->round = 1;
+	gs->depth = 0;
+	gs->numChildren = 0;
+	
 	GameState::lastRound = initialState["rounds"].asInt();
 	
 	//load all races
@@ -343,6 +348,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	//build, upgrade, research, explore, move, influence, colonize, diplomacy, pass
 	//when everyone passes combat phase
 	//combat is random
+	static int totalStatesGenerated = 0;
 	
 	PlayerBoard* currentBoard = parent.getCurrentPlayer();
 	
@@ -428,6 +434,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					freeInf = cb->getFreeInfluence();
 					if (freeInf != nullptr)
 					{
+						cout << "USED COLONY SHIPS: " << cb->usedColonyShips << endl;
 						//Place influence and flip colonize token
 						cs = new GameState(*cs); //Note this is on a copy of the previous child state, not parent.
 						cb = cs->getCurrentPlayer();
@@ -527,7 +534,12 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 		}
 	}
 	
-	cout << "Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
+	totalStatesGenerated += children.size();
+	parent.numChildren += children.size();
+	cout << "+ Tree Depth: " << parent.depth << endl;
+	cout << "+ Tree Breadth: " << parent.numChildren << endl;
+	cout << "+ Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
+	cout << "+ Total States: " << totalStatesGenerated << ". " << sizeof(GameState) * totalStatesGenerated << " bytes." << endl;
 	return children;
 }
 

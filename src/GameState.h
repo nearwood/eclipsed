@@ -31,7 +31,9 @@ public:
 	//same as sector, one static list of all tech, then each state has status of available ones
 	
 	short int round;
-	static short int lastRound; //should be static
+	static short int lastRound;
+	int depth;
+	int numChildren;
 	
 	GameState();
 	~GameState();
