@@ -31,6 +31,7 @@ class PlayerBoard //: Race?
 {
 	std::vector<Disc*> inf; //TODO list of actioned/sectored vs free
 	static std::map<byte, byte> actionCost;
+	bool dead;
 	
 public:
 	Race& race; //TODO should be const, no easy way
@@ -53,6 +54,10 @@ public:
 	Disc* getFreeInfluence();
 	std::vector<Disc*> getPlacedInfluence();
 	void placeInfluence(Sector* s);
+	void razeSector(Sector *s);
+	void razeSector(Disc *d);
+	void removeFromGame();
+	bool isActive();
 	byte getActionCost();
 	
 	void roundCleanup();

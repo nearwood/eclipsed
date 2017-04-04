@@ -335,7 +335,7 @@ PlayerBoard* GameState::getNextPlayer()
 bool GameState::allPlayersPass()
 {
 	for (auto it = players.cbegin(); it != players.cend(); ++it)
-		if (!(*it)->pass) return false;
+		if ((*it)->isActive() && !(*it)->pass) return false;
 	
 	return true;
 }
@@ -350,16 +350,20 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	//combat is random
 	static int totalStatesGenerated = 0;
 	
-	PlayerBoard* currentBoard = parent.getCurrentPlayer();
-	
 	std::list<GameState*> children;
+	
+	PlayerBoard* currentBoard = parent.getCurrentPlayer();
+	if (!currentBoard->isActive())
+	{
+		return children;
+	};
 	
 	//TODO assert childBoard != nullptr
 	if (!currentBoard->pass)
 	{
 		cout << "Playing as: " << currentBoard->name << " [" << (int)currentBoard->e << ", " << (int)currentBoard->m << ", " << (int)currentBoard->s << "]" << endl;
 		
-		cout << "+PASS" << endl;
+		//cout << "+PASS" << endl;
 		GameState* childState = new GameState(parent); //TODO Shouldn't we use parent first? Or parent is already 'done'?
 		PlayerBoard *childBoard = childState->getCurrentPlayer();
 		
@@ -402,41 +406,42 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 			
 			//Find out sectors where we have influence discs placed
 			std::vector<Disc*> placedInf = currentBoard->getPlacedInfluence();
-			cout << "Checking placed influence: " << placedInf.size() << endl;
+			//cout << "Checking placed influence: " << placedInf.size() << endl;
 			
 			for (auto it = placedInf.cbegin(); it != placedInf.cend(); ++it)
 			{//For each placed influence //TODO Also for any 'unpinned' ships
 				Sector* sectorA = parent.map->getPlacedSectorById((*it)->getSector());
 				
 				//TODO Branch to one child for each (available) ring
-				int r = rand() % 3 + 1;
+				int r = rand() % 3 + 1; //Player must choose ONE ring to pick from
 				std::vector<Sector*> adjacentSectors = parent.map->getPotentialAdjacentSectors(*sectorA, r);
-				cout << " ^- adjacent sectors: " << adjacentSectors.size() << endl; 
+				//cout << " ^- adjacent sectors: " << adjacentSectors.size() << endl; 
 				
 				for (Sector* s : adjacentSectors)
 				{//For all 'empty' sector positions around the sector with a placed influence disc
 					if (s == nullptr) continue; //Why would it be null?
 					
-					cout << "+EXPLORE: " << endl; //<< newSector << " free influence: " << cb->getRemainingActions() << endl;
 					//Place sector without placing influence
 					GameState* cs = new GameState(parent);
 					Sector* newSector = cs->map->getAvailableSectorById(s->id);
 					PlayerBoard* cb = cs->getCurrentPlayer();
 					Disc* freeInf = cb->getFreeInfluence(); //This won't be null since parent had one free
-					freeInf->use();
+					freeInf->use(); //use influence for explore action
 					cs->map->placeSector(newSector->id);
-					
+					//cout << "+EXPLORE: @(" << newSector->q << ", " << newSector->r << ", " << newSector->s << ")" << endl; //<< newSector << " free influence: " << cb->getRemainingActions() << endl;
 					PlayerBoard *nextPlayer = cs->getNextPlayer();
 					cs->currentPlayer = nextPlayer->name;
 					children.push_back(cs);
+					
+					//TODO Discarding into face up pile
 					
 					//Here we use the childBoard to check if there's an *additional* influence token available
 					freeInf = cb->getFreeInfluence();
 					if (freeInf != nullptr)
 					{
-						cout << "USED COLONY SHIPS: " << cb->usedColonyShips << endl;
+						//cout << "USED COLONY SHIPS: " << cb->usedColonyShips << endl;
 						//Place influence and flip colonize token
-						cs = new GameState(*cs); //Note this is on a copy of the previous child state, not parent.
+						cs = new GameState(*cs); //Note this is a copy of the previous child state, not parent.
 						cb = cs->getCurrentPlayer();
 						freeInf = cb->getFreeInfluence(); //Reassign influence from this new state
 						//If we have free influence and an unused colony ship left
@@ -445,7 +450,7 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 							newSector = cs->map->getPlacedSectorById(s->id);
 							freeInf->setSector(newSector->id);
 							cb->usedColonyShips++; //"flip" colony ship or whatever that thing is
-							cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
+							//cout << "+INFLUENCE: " << newSector << " free influence: " << cb->getRemainingActions() << endl;
 							PlayerBoard *nextPlayer = cs->getNextPlayer();
 							cs->currentPlayer = nextPlayer->name;
 							children.push_back(cs);
@@ -497,12 +502,31 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 					}
 					else
 					{//trading isn't enough
-						GameState* cs = new GameState(parent);
 						//cout << "+RAZE: Not implemented" << endl;
-						//PlayerBoard* p = cs->getPlayer(l->name);
-						
 						//TODO raze discs, and if that's not enough, player is out of game
-
+						GameState* cs = new GameState(parent);
+						PlayerBoard* p = cs->getPlayer(l->name);
+						std::vector<Disc*> placedInfluence = p->getPlacedInfluence();
+						
+						while (placedInfluence.size() > 0)
+						{
+							Disc *d = placedInfluence.back();
+							p->razeSector(d);
+							placedInfluence.pop_back();
+							
+							if (p->getActionCost() < (extra + l->e))
+							{
+								break;
+							}
+						}
+						
+						if (placedInfluence.size() == 0 && p->getActionCost() > (extra + l->e))
+						{
+							cout << l->name << " bankrupt and removed from game." << endl;
+							p->removeFromGame();
+						}
+						
+						
 						//cout << l->name << " bankrupt. Razing colonies?" << endl;
 						cs->roundCleanup();
 						PlayerBoard *nextPlayer = cs->getNextPlayer();
@@ -535,11 +559,11 @@ std::list<GameState*> GameState::generateChildren(GameState& parent)
 	}
 	
 	totalStatesGenerated += children.size();
-	parent.numChildren += children.size();
-	cout << "+ Tree Depth: " << parent.depth << endl;
-	cout << "+ Tree Breadth: " << parent.numChildren << endl;
-	cout << "+ Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
-	cout << "+ Total States: " << totalStatesGenerated << ". " << sizeof(GameState) * totalStatesGenerated << " bytes." << endl;
+	//parent.numChildren += children.size();
+	//cout << "+ Tree Depth: " << parent.depth << endl;
+	//cout << "+ Tree Breadth: " << parent.numChildren << endl;
+	//cout << "+ Generated " << children.size() << " child states. " << sizeof(GameState) * children.size() + sizeof(children) << " bytes." << endl;
+	//cout << "+ Total States: " << totalStatesGenerated << ". " << sizeof(GameState) * totalStatesGenerated << " bytes." << endl;
 	return children;
 }
 

@@ -8,6 +8,7 @@ using namespace std;
 std::map<byte, byte> PlayerBoard::actionCost = {{1, 0}, {2, 0}, {3, 1}, {4, 2}, {5, 3}, {6, 5}, {7, 7}, {8, 10}, {9, 13}, {10, 17}, {11, 21}, {12, 25}, {13, 30}};
 
 PlayerBoard::PlayerBoard(Race& r):
+dead(false),
 race(r),
 pass(false)
 {
@@ -17,13 +18,14 @@ pass(false)
 	this->s = r.s;
 	
 	//TODO externalize # of influence discs
-	for (int d = 1; d <= 6; ++d) //13, TODO add up to +3 later
+	for (int d = 1; d <= 3; ++d) //13, TODO add up to +3 later
 	{
 		inf.push_back(new Disc(this, 0));
 	}
 }
 
 PlayerBoard::PlayerBoard(PlayerBoard& other):
+dead(other.dead),
 race(other.race),
 num(other.num),
 pass(other.pass),
@@ -79,6 +81,29 @@ void PlayerBoard::placeInfluence(Sector* s)
 		//cout << "Placing " << this->name << " influence disc on sector " << s->id << endl;
 		d->setSector(s->id);
 	}
+}
+
+void PlayerBoard::razeSector(Sector *s)
+{
+	
+}
+
+void PlayerBoard::razeSector(Disc *d)
+{
+	d->setSector(0);
+	d->free();
+	//TODO return all cubes
+}
+
+void PlayerBoard::removeFromGame()
+{
+	this->dead = true;
+	//TODO remove all ships, cubes, influence
+}
+
+bool PlayerBoard::isActive()
+{
+	return !this->dead;
 }
 
 void PlayerBoard::roundCleanup()
